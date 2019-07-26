@@ -105,4 +105,15 @@ public class WorkItemPlanController {
         String welding = this.workItemRelationService.welding(idGroup,admin,type,adminRole);
         return welding;
     }
+
+    /*
+     * @author 毕翔斐
+     * @version 1.0
+     * @description 获取出库列表
+     * */
+    @RequestMapping(value = "/getOutInfo")
+    public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String adminRole){
+        String getOutInfo = this.workItemRelationService.getOutInfo(pageNo,pageSize,admin,adminRole);
+        return getOutInfo;
+    }
 }

@@ -27,6 +27,10 @@ public interface WorkitemRelationMapper {
 
     List<WorkitemRelationPlan> selectWeldingInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("no")String admin,@Param("type")Integer type);
 
+    List<TaskInfo> selectOutInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+
+    Integer selectOutInfoCount();
+
     Integer selectPlanCount();
 
     Integer selectAssemblyInfoCount(@Param("no")String admin);

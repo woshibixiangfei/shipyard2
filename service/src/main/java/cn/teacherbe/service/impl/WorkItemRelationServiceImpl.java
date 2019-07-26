@@ -310,5 +310,39 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         return json.toString();
     }
 
+    @Override
+    public String getOutInfo(Integer pageNo, Integer pageSize, String admin, String adminRole) {
+        try{
+            if(adminRole.equals("3")){
+                Integer current = pageNo;
+                pageNo = (pageNo - 1) * pageSize;
+                List<TaskInfo> OutInfoList = this.workItemRealationMapper.selectOutInfo(pageNo,pageSize);
+                JSONArray jsonObject = JSONArray.fromObject(OutInfoList);
+                Integer total = this.workItemRealationMapper.selectOutInfoCount();
+                Integer totalPage = (total + pageSize - 1) / pageSize;
+                JSONObject json = new JSONObject();
+                json.put("status", "success");
+                JSONObject data = new JSONObject();
+                data.put("total", total);
+                data.put("totalPage", totalPage);
+                data.put("pageNo", current);
+                data.put("pageSize", OutInfoList.size());
+                JSONArray jsonArray = JSONArray.fromObject(jsonObject);
+                data.put("record", jsonArray);
+                json.put("data", data);
+                String jsonStr = json.toString();
+                return jsonStr;
+            }
+            JSONObject json = new JSONObject();
+            json.put("status", "failed");
+            return json.toString();
+        }catch (Exception e){
+            e.printStackTrace();
+            JSONObject json = new JSONObject();
+            json.put("status", "failed");
+            return json.toString();
+        }
+    }
+
 
 }

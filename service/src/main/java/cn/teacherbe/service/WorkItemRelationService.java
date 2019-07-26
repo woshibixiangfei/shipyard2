@@ -17,4 +17,6 @@ public interface WorkItemRelationService {
     public String getWeldingInfo(Integer pageNo, Integer pageSize, String admin,Integer type,String adminRole);
 
     public String welding(String idGroup,String admin,Integer type,String adminRole);
+
+    public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String adminRole);
 }
