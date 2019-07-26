@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacherbe.dao.AdminMapper">
+    <resultMap id="BaseResultMap" type="cn.teacherbe.entity.Admin">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="no" jdbcType="VARCHAR" property="no"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="register_date" jdbcType="TIMESTAMP" property="registerDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="updater" jdbcType="VARCHAR" property="updater"/>
+    </resultMap>
+    <resultMap id="AdminRoleModel" type="cn.teacherbe.entity.AdminRoleModel">
+        <result column="no" jdbcType="VARCHAR" property="no"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="register_date" jdbcType="VARCHAR" property="registerDate"/>
+        <result column="update_date" jdbcType="VARCHAR" property="updateDate"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="updater" jdbcType="VARCHAR" property="updater"/>
+        <result column="department_level" jdbcType="INTEGER" property="departmentLevel"/>
+        <result column="role_level" jdbcType="INTEGER" property="roleLevel"/>
+        <result column="department_name" jdbcType="VARCHAR" property="departmentName"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, no, password,delete_flag, register_date, update_date, creator, updater
+  </sql>
+    <select id="login" parameterType="cn.teacherbe.entity.Admin" resultMap="AdminRoleModel">
+    SELECT t.no,t.password,t.register_date,t.update_date,t.creator,t.updater,
+    t3.level as department_level,
+    t4.level as role_level,
+    t3.name department_name,
+    t4.name role_name
+    FROM t_admin t
+    LEFT JOIN t_admin_department t1 ON t.id = t1.admin_id
+    LEFT JOIN t_department t3 ON t1.department_id = t3.id
+    LEFT JOIN t_admin_role t2 ON t.id = t2.admin_id
+    LEFT JOIN t_role t4 ON t4.id = t2.role_id
+    WHERE t.no = #{no,jdbcType=VARCHAR}
+    and t.password = #{password,jdbcType=VARCHAR}
+    and t.delete_flag = 0
+    and t1.delete_flag = 0
+    and t2.delete_flag = 0
+    and t3.delete_flag = 0
+    and t4.delete_flag = 0
+  </select>
+    <select id="selectByPrimaryKey" parameterType="cn.teacherbe.entity.Admin" resultMap="BaseResultMap">
+    select 
+    *
+    from t_admin
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="cn.teacherbe.entity.Admin">
+    delete from t_admin
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="cn.teacherbe.entity.Admin">
+    insert into t_admin (id, no, password, 
+      delete_flag, register_date, update_date, 
+      creator, updater)
+    values (#{id,jdbcType=INTEGER}, #{no,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{registerDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{creator,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="cn.teacherbe.entity.Admin">
+        insert into t_admin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="no != null">
+                no,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+            <if test="registerDate != null">
+                register_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="no != null">
+                #{no,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="registerDate != null">
+                #{registerDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.teacherbe.entity.Admin">
+        update t_admin
+        <set>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="registerDate != null">
+                register_date = #{registerDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+        and no = #{no,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.teacherbe.entity.Admin">
+    update t_admin
+    set password = #{password,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      register_date = #{registerDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR},
+      updater = #{updater,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

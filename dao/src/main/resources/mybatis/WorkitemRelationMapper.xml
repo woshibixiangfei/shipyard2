@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacherbe.dao.WorkitemRelationMapper">
+  <resultMap id="BaseResultMap" type="cn.teacherbe.entity.WorkitemRelation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="one_common_id" jdbcType="INTEGER" property="oneCommonId" />
+    <result column="two_common_id" jdbcType="INTEGER" property="twoCommonId" />
+    <result column="execution_cross" jdbcType="VARCHAR" property="executionCross" />
+    <result column="executive_class" jdbcType="VARCHAR" property="executiveClass" />
+    <result column="check_if" jdbcType="INTEGER" property="checkIf" />
+    <result column="process" jdbcType="VARCHAR" property="process" />
+    <result column="workitem_status" jdbcType="INTEGER" property="workitemStatus" />
+    <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="cn.teacherbe.entity.WorkitemRelationPlan">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="ship_number2" jdbcType="VARCHAR" property="shipNumber2" />
+    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="batch2" jdbcType="INTEGER" property="batch2" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="segmentation2" jdbcType="VARCHAR" property="segmentation2" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="part_number2" jdbcType="VARCHAR" property="partNumber2" />
+  </resultMap>
+  <resultMap id="BaseResultMap3" type="cn.teacherbe.entity.TaskInfo">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="ship_number2" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="batch2" jdbcType="INTEGER" property="batch2" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="segmentation2" jdbcType="VARCHAR" property="segmentation2" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="part_number2" jdbcType="VARCHAR" property="partNumber2" />
+    <result column="workitem_status" jdbcType="VARCHAR" property="workitemStatus" />
+    <result column="executive_class" jdbcType="VARCHAR" property="executiveClass" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, one_common_id, two_common_id, execution_cross, executive_class, check_if, process, 
+    workitem_status, register_date, update_date, creator, updater, delete_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_workitem_relation
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCommonId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_workitem_relation
+    where one_common_id = #{commonId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCommonId2" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_workitem_relation
+    where two_common_id = #{commonId2,jdbcType=INTEGER}
+  </select>
+  <select id="selectPlan" resultMap="BaseResultMap2">
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,t1.part_number,t2.ship_number as ship_number2,
+    t2.batch as batch2,t2.segmentation as segmentation2,t2.part_number as part_number2
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE (t.delete_flag = 0 or t.delete_flag is null)
+    AND t1.delete_flag = 0
+    AND t2.delete_flag = 0
+    AND t1.`status` = 3
+    AND t2.`status` = 3
+    AND t.workitem_status = 0
+    AND t.execution_cross = 'nothing'
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectPlanCount" resultType="Integer">
+    SELECT count(*)
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE (t.delete_flag = 0 or t.delete_flag is null)
+    AND t1.delete_flag = 0
+    AND t2.delete_flag = 0
+    AND t1.`status` = 3
+    AND t2.`status` = 3
+    AND t.workitem_status = 0
+    AND t.execution_cross = 'nothing'
+  </select>
+
+  <select id="selectTaskInfo" resultMap="BaseResultMap3">
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,t1.part_number,t2.ship_number as ship_number2,
+    t2.batch as batch2,t2.segmentation as segmentation2,t2.part_number as part_number2,t.workitem_status,t.executive_class
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status IN (0,1)
+    AND t.execution_cross = (
+    SELECT
+    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+    )
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectTaskInfoCount" resultType="Integer">
+    SELECT count(*)
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status IN (0,1)
+    AND t.execution_cross = (
+    SELECT
+    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+    )
+  </select>
+
+  <select id="selectAssemblyInfo" resultMap="BaseResultMap2">
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,t1.part_number,t2.ship_number as ship_number2,
+    t2.batch as batch2,t2.segmentation as segmentation2,t2.part_number as part_number2
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status IN (0,1)
+    AND t.execution_cross = (
+    SELECT
+    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+    )
+    AND t.executive_class = (SELECT c.id
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE a.`no` = #{no,jdbcType=VARCHAR}
+    ))
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAssemblyInfoCount" resultType="Integer">
+    SELECT count(*)
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status IN (0,1)
+    AND t.execution_cross = (
+    SELECT
+    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+    )
+    AND t.executive_class = (SELECT c.id
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE a.`no` = #{no,jdbcType=VARCHAR}
+    ))
+  </select>
+
+  <select id="selectWeldingInfo" resultMap="BaseResultMap2">
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,t1.part_number,
+    t2.ship_number as ship_number2,
+    t2.batch as batch2,t2.segmentation as segmentation2,
+    t2.part_number as part_number2,t.workitem_status,t.executive_class
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status = 2
+    AND t.check_if = 1
+    AND t.process &lt;&gt; 'nothing'
+    AND t.execution_cross = (
+    SELECT
+    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+    )
+    AND t.executive_class = (SELECT c.id
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE a.`no` = #{no,jdbcType=VARCHAR}
+    ))
+    AND t.process like '%${type}%'
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectWeldingInfoCount" resultType="Integer">
+    SELECT count(*)
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status = 2
+    AND t.check_if = 1
+    AND t.process &lt;&gt; 'nothing'
+    AND t.execution_cross = (
+    SELECT
+    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+    )
+    AND t.executive_class = (SELECT c.id
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE a.`no` = #{no,jdbcType=VARCHAR}
+    ))
+    AND t.process like '%${type}%'
+  </select>
+
+  <update id="underPlan" >
+    UPDATE t_workitem_relation
+    SET execution_cross = #{kua,jdbcType=VARCHAR},updater = #{updater,jdbcType=VARCHAR},
+    update_date = SYSDATE()
+    WHERE (delete_flag = 0 OR delete_flag IS NULL)
+    AND id IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <update id="claim" >
+    UPDATE t_workitem_relation t
+    SET t.executive_class = (SELECT c.id
+    FROM t_department c where c.id = (
+    SELECT b.department_id from t_admin a
+    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    WHERE a.`no` = #{no,jdbcType=VARCHAR}
+    )),t.workitem_status = 1,t.updater = #{no,jdbcType=VARCHAR}
+    ,t.update_date = SYSDATE()
+    WHERE (t.delete_flag = 0 OR t.delete_flag IS NULL)
+    AND t.id IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <update id="assembly" >
+    <foreach collection="idGroup" item="item" index="index" separator=";">
+      UPDATE t_workitem_relation SET workitem_status = 2,
+      check_if = 1,
+      process = #{item.process},
+      updater = #{no,jdbcType=VARCHAR},
+      update_date = SYSDATE()
+      WHERE
+      (delete_flag = 0 OR delete_flag IS NULL)
+      AND ID = #{item.id}
+    </foreach>
+  </update>
+
+  <update id="done" >
+      UPDATE t_workitem_relation SET workitem_status = 3,
+      updater = #{no,jdbcType=VARCHAR},
+      update_date = SYSDATE()
+      WHERE
+      (delete_flag = 0 OR delete_flag IS NULL)
+      AND ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_workitem_relation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.teacherbe.entity.WorkitemRelation">
+    insert into t_workitem_relation (id, one_common_id, two_common_id, 
+      execution_cross, executive_class, check_if, 
+      process, workitem_status, register_date, 
+      update_date, creator, updater, 
+      delete_flag)
+    values (#{id,jdbcType=INTEGER}, #{oneCommonId,jdbcType=INTEGER}, #{twoCommonId,jdbcType=INTEGER}, 
+      #{executionCross,jdbcType=VARCHAR}, #{executiveClass,jdbcType=VARCHAR}, #{checkIf,jdbcType=INTEGER}, 
+      #{process,jdbcType=VARCHAR}, #{workitemStatus,jdbcType=INTEGER}, #{registerDate,jdbcType=TIMESTAMP}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, 
+      #{deleteFlag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.teacherbe.entity.WorkitemRelation">
+    insert into t_workitem_relation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="oneCommonId != null">
+        one_common_id,
+      </if>
+      <if test="twoCommonId != null">
+        two_common_id,
+      </if>
+      <if test="executionCross != null">
+        execution_cross,
+      </if>
+      <if test="executiveClass != null">
+        executive_class,
+      </if>
+      <if test="checkIf != null">
+        check_if,
+      </if>
+      <if test="process != null">
+        process,
+      </if>
+      <if test="workitemStatus != null">
+        workitem_status,
+      </if>
+      <if test="registerDate != null">
+        register_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="oneCommonId != null">
+        #{oneCommonId,jdbcType=INTEGER},
+      </if>
+      <if test="twoCommonId != null">
+        #{twoCommonId,jdbcType=INTEGER},
+      </if>
+      <if test="executionCross != null">
+        #{executionCross,jdbcType=VARCHAR},
+      </if>
+      <if test="executiveClass != null">
+        #{executiveClass,jdbcType=VARCHAR},
+      </if>
+      <if test="checkIf != null">
+        #{checkIf,jdbcType=INTEGER},
+      </if>
+      <if test="process != null">
+        #{process,jdbcType=VARCHAR},
+      </if>
+      <if test="workitemStatus != null">
+        #{workitemStatus,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacherbe.entity.WorkitemRelation">
+    update t_workitem_relation
+    <set>
+      <if test="oneCommonId != null">
+        one_common_id = #{oneCommonId,jdbcType=INTEGER},
+      </if>
+      <if test="twoCommonId != null">
+        two_common_id = #{twoCommonId,jdbcType=INTEGER},
+      </if>
+      <if test="executionCross != null">
+        execution_cross = #{executionCross,jdbcType=VARCHAR},
+      </if>
+      <if test="executiveClass != null">
+        executive_class = #{executiveClass,jdbcType=VARCHAR},
+      </if>
+      <if test="checkIf != null">
+        check_if = #{checkIf,jdbcType=INTEGER},
+      </if>
+      <if test="process != null">
+        process = #{process,jdbcType=VARCHAR},
+      </if>
+      <if test="workitemStatus != null">
+        workitem_status = #{workitemStatus,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        register_date = #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.teacherbe.entity.WorkitemRelation">
+    update t_workitem_relation
+    set one_common_id = #{oneCommonId,jdbcType=INTEGER},
+      two_common_id = #{twoCommonId,jdbcType=INTEGER},
+      execution_cross = #{executionCross,jdbcType=VARCHAR},
+      executive_class = #{executiveClass,jdbcType=VARCHAR},
+      check_if = #{checkIf,jdbcType=INTEGER},
+      process = #{process,jdbcType=VARCHAR},
+      workitem_status = #{workitemStatus,jdbcType=INTEGER},
+      register_date = #{registerDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR},
+      updater = #{updater,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

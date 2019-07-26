@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacherbe.dao.WorkItemMapper">
+  <resultMap id="BaseResultMap" type="cn.teacherbe.entity.WorkItem">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="workItem_id" jdbcType="INTEGER" property="workitemId" />
+    <result column="straight" jdbcType="INTEGER" property="straight" />
+    <result column="linear" jdbcType="INTEGER" property="linear" />
+    <result column="soldering" jdbcType="INTEGER" property="soldering" />
+    <result column="linear_welding" jdbcType="INTEGER" property="linearWelding" />
+    <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, workItem_id, straight, `linear`, soldering, linear_welding, register_date, update_date,
+    creator, updater, delete_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_workitem
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByWorkId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_workitem
+    where workItem_id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectProcess" resultType="Integer">
+    select
+    substring_index(substring_index(a.process,',',b.help_topic_id+1),',',-1)
+    from t_workitem_relation a
+    join  mysql.help_topic b  on b.help_topic_id &lt;(length(a.process) - length(replace(a.process,',',''))+1)
+    WHERE a.id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_workitem
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertInit" useGeneratedKeys="true" keyProperty="workItem_id">
+    insert into t_workitem (id, workItem_id, straight,
+    `linear`, soldering, linear_welding,
+    register_date, update_date, creator,
+    updater, delete_flag)
+    <foreach collection="idGroup" item="item" index="index" separator="union all">
+      (select null, #{item}, 0,
+      0, 0, 0, SYSDATE(),
+      SYSDATE(), #{no,jdbcType=VARCHAR}, #{no,jdbcType=VARCHAR},
+      0 from dual where not exists (select * from t_workitem where workItem_id = #{item}))
+    </foreach>
+  </insert>
+  <update id="updateWorkitem1" >
+    UPDATE t_workitem t
+    SET straight = 1,
+    t.updater = #{no,jdbcType=VARCHAR},
+    t.update_date = SYSDATE()
+    WHERE
+    delete_flag = 0
+    AND workItem_id IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="updateWorkitem2" >
+    UPDATE t_workitem t
+    SET `linear` = 1,
+    t.updater = #{no,jdbcType=VARCHAR},
+    t.update_date = SYSDATE()
+    WHERE
+    delete_flag = 0
+    AND workItem_id IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="updateWorkitem3" >
+    UPDATE t_workitem t
+    SET soldering = 1,
+    t.updater = #{no,jdbcType=VARCHAR},
+    t.update_date = SYSDATE()
+    WHERE
+    delete_flag = 0
+    AND workItem_id IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="updateWorkitem4" >
+    UPDATE t_workitem t
+    SET linear_welding = 1,
+    t.updater = #{no,jdbcType=VARCHAR},
+    t.update_date = SYSDATE()
+    WHERE
+    delete_flag = 0
+    AND workItem_id IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <insert id="insert" parameterType="cn.teacherbe.entity.WorkItem">
+    insert into t_workitem (id, workItem_id, straight, 
+      linear, soldering, linear_welding, 
+      register_date, update_date, creator, 
+      updater, delete_flag)
+    values (#{id,jdbcType=INTEGER}, #{workitemId,jdbcType=INTEGER}, #{straight,jdbcType=INTEGER}, 
+      #{linear,jdbcType=INTEGER}, #{soldering,jdbcType=INTEGER}, #{linearWelding,jdbcType=INTEGER}, 
+      #{registerDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, 
+      #{updater,jdbcType=VARCHAR}, #{deleteFlag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.teacherbe.entity.WorkItem">
+    insert into t_workitem
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="workitemId != null">
+        workItem_id,
+      </if>
+      <if test="straight != null">
+        straight,
+      </if>
+      <if test="linear != null">
+        linear,
+      </if>
+      <if test="soldering != null">
+        soldering,
+      </if>
+      <if test="linearWelding != null">
+        linear_welding,
+      </if>
+      <if test="registerDate != null">
+        register_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="workitemId != null">
+        #{workitemId,jdbcType=INTEGER},
+      </if>
+      <if test="straight != null">
+        #{straight,jdbcType=INTEGER},
+      </if>
+      <if test="linear != null">
+        #{linear,jdbcType=INTEGER},
+      </if>
+      <if test="soldering != null">
+        #{soldering,jdbcType=INTEGER},
+      </if>
+      <if test="linearWelding != null">
+        #{linearWelding,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacherbe.entity.WorkItem">
+    update t_workitem
+    <set>
+      <if test="workitemId != null">
+        workItem_id = #{workitemId,jdbcType=INTEGER},
+      </if>
+      <if test="straight != null">
+        straight = #{straight,jdbcType=INTEGER},
+      </if>
+      <if test="linear != null">
+        linear = #{linear,jdbcType=INTEGER},
+      </if>
+      <if test="soldering != null">
+        soldering = #{soldering,jdbcType=INTEGER},
+      </if>
+      <if test="linearWelding != null">
+        linear_welding = #{linearWelding,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        register_date = #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.teacherbe.entity.WorkItem">
+    update t_workitem
+    set workItem_id = #{workitemId,jdbcType=INTEGER},
+      straight = #{straight,jdbcType=INTEGER},
+      linear = #{linear,jdbcType=INTEGER},
+      soldering = #{soldering,jdbcType=INTEGER},
+      linear_welding = #{linearWelding,jdbcType=INTEGER},
+      register_date = #{registerDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR},
+      updater = #{updater,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

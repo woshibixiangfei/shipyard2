@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacherbe.dao.AccCommonInfoMapper">
+  <resultMap id="BaseResultMap" type="cn.teacherbe.entity.AccCommonInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="serial_number" jdbcType="INTEGER" property="serialNumber" />
+    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="thickness" jdbcType="INTEGER" property="thickness" />
+    <result column="width" jdbcType="INTEGER" property="width" />
+    <result column="length" jdbcType="INTEGER" property="length" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="number_parts" jdbcType="INTEGER" property="numberParts" />
+    <result column="group" jdbcType="VARCHAR" property="group" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="replenishment_status" jdbcType="INTEGER" property="replenishmentStatus" />
+    <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="cn.teacherbe.entity.AccInecomingInfo">
+    <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="replenishment_status" jdbcType="INTEGER" property="replenishmentStatus" />
+    <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+    <result column="number_plate" jdbcType="VARCHAR" property="numberPlate" />
+  </resultMap>
+  <resultMap id="BaseResultMap3" type="cn.teacherbe.entity.PairEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ship_number, serial_number, batch, segmentation, part_number, thickness, width, 
+    length, type, number_parts, `group`, `status`, replenishment_status, register_date, update_date,
+    creator, updater, delete_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_acc_commoninfo
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    AND `status` = #{status,jdbcType=INTEGER}
+    <trim>
+    <if test="segmentation != null">
+    AND segmentation = #{segmentation,jdbcType=VARCHAR}
+    </if>
+    </trim>
+    AND ship_number = #{shipNumber,jdbcType=VARCHAR}
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAllCount" resultType="Integer">
+    select
+    count(*)
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    AND `status` = #{status,jdbcType=INTEGER}
+    <trim>
+      <if test="segmentation != null">
+        AND segmentation = #{segmentation,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    AND ship_number = #{shipNumber,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectInvoiceInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    AND `status` = #{status,jdbcType=INTEGER}
+    AND replenishment_status = 0
+    ORDER BY ship_number,segmentation
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectInvoiceInfoCount" resultType="Integer">
+    select
+    count(*)
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    AND `status` = #{status,jdbcType=INTEGER}
+    AND replenishment_status = 0
+    ORDER BY ship_number,segmentation
+  </select>
+
+  <select id="selectAccInecomingInfo" resultMap="BaseResultMap2">
+    select
+    t.ship_number,t.batch,t.segmentation,t.part_number,t.number_parts,t.register_date,t.replenishment_status,t1.number_plate
+    from t_acc_commoninfo t
+    LEFT JOIN t_acc_seplenishment t1 ON t.id = t1.common_id
+    where
+    t.delete_flag = 0
+    AND t1.delete_flag = 0
+    AND t.`status` not in (0,1)
+    OR t1.id is null
+    ORDER BY t.register_date desc
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAccInecomingInfoCount" resultType="Integer">
+    select
+    count(*)
+    from t_acc_commoninfo t
+    LEFT JOIN t_acc_seplenishment t1 ON t.id = t1.common_id
+    where
+    t.delete_flag = 0
+    AND t1.delete_flag = 0
+    AND t.`status` not in (0,1)
+    OR t1.id is null
+    ORDER BY t.register_date desc
+  </select>
+
+  <select id="selectPair" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    AND `status` = 2
+    AND replenishment_status = 0
+  </select>
+
+  <select id="selectUnPair" resultMap="BaseResultMap2">
+    SELECT id,part_number
+    FROM t_acc_commoninfo
+    WHERE
+    delete_flag = 0
+    AND `status` = 2
+  </select>
+
+  <update id="updateById" >
+    UPDATE t_acc_commoninfo SET status = 1,updater = #{updater,jdbcType=VARCHAR},
+    update_date = #{updateDate,jdbcType=TIMESTAMP}
+    WHERE
+    delete_flag = 0
+    AND ID IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+     #{item}
+    </foreach>
+  </update>
+
+  <update id="updateById2" >
+    UPDATE t_acc_commoninfo SET status = 2,replenishment_status = 1,updater = #{updater,jdbcType=VARCHAR},
+    update_date = #{updateDate,jdbcType=TIMESTAMP}
+    WHERE delete_flag = 0
+    AND ID IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="updateById3" >
+    UPDATE t_acc_commoninfo SET status = 2,updater = #{updater,jdbcType=VARCHAR},
+    update_date = #{updateDate,jdbcType=TIMESTAMP}
+    WHERE delete_flag = 0
+    AND status = 1
+  </update>
+  <update id="updateById4" >
+    UPDATE t_acc_commoninfo SET status = 3
+    WHERE delete_flag = 0
+    AND status = 2
+    AND (id = #{commonId,jdbcType=INTEGER} OR id = #{commonId2,jdbcType=INTEGER})
+  </update>
+  <update id="updateReplenishment" >
+    UPDATE t_acc_commoninfo t
+    LEFT JOIN t_acc_seplenishment t1 ON t.id = t1.common_id
+    SET t.replenishment_status = 0,
+    t.updater = #{updater,jdbcType=VARCHAR},
+    t.update_date = SYSDATE()
+    WHERE t1.arrival_status = 0
+    AND t1.replenishment_status = 0
+    AND t.delete_flag = 0
+    AND t1.delete_flag = 0
+    AND t1.number_plate is not null
+    AND t1.id IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </update>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_acc_commoninfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.teacherbe.entity.AccCommonInfo">
+    insert into t_acc_commoninfo (id, ship_number, serial_number, 
+      batch, segmentation, part_number, 
+      thickness, width, length, 
+      type, number_parts, `group`,
+      `status`, replenishment_status, register_date,
+      update_date, creator, updater, 
+      delete_flag)
+    values (#{id,jdbcType=INTEGER}, #{shipNumber,jdbcType=VARCHAR}, #{serialNumber,jdbcType=INTEGER}, 
+      #{batch,jdbcType=INTEGER}, #{segmentation,jdbcType=VARCHAR}, #{partNumber,jdbcType=VARCHAR}, 
+      #{thickness,jdbcType=INTEGER}, #{width,jdbcType=INTEGER}, #{length,jdbcType=INTEGER}, 
+      #{type,jdbcType=VARCHAR}, #{numberParts,jdbcType=INTEGER}, #{group,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{replenishmentStatus,jdbcType=INTEGER}, #{registerDate,jdbcType=TIMESTAMP}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, 
+      #{deleteFlag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.teacherbe.entity.AccCommonInfo">
+    insert into t_acc_commoninfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="shipNumber != null">
+        ship_number,
+      </if>
+      <if test="serialNumber != null">
+        serial_number,
+      </if>
+      <if test="batch != null">
+        batch,
+      </if>
+      <if test="segmentation != null">
+        segmentation,
+      </if>
+      <if test="partNumber != null">
+        part_number,
+      </if>
+      <if test="thickness != null">
+        thickness,
+      </if>
+      <if test="width != null">
+        width,
+      </if>
+      <if test="length != null">
+        length,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="numberParts != null">
+        number_parts,
+      </if>
+      <if test="group != null">
+        group,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="replenishmentStatus != null">
+        replenishment_status,
+      </if>
+      <if test="registerDate != null">
+        register_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="shipNumber != null">
+        #{shipNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        #{serialNumber,jdbcType=INTEGER},
+      </if>
+      <if test="batch != null">
+        #{batch,jdbcType=INTEGER},
+      </if>
+      <if test="segmentation != null">
+        #{segmentation,jdbcType=VARCHAR},
+      </if>
+      <if test="partNumber != null">
+        #{partNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="thickness != null">
+        #{thickness,jdbcType=INTEGER},
+      </if>
+      <if test="width != null">
+        #{width,jdbcType=INTEGER},
+      </if>
+      <if test="length != null">
+        #{length,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="numberParts != null">
+        #{numberParts,jdbcType=INTEGER},
+      </if>
+      <if test="group != null">
+        #{group,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="replenishmentStatus != null">
+        #{replenishmentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacherbe.entity.AccCommonInfo">
+    update t_acc_commoninfo
+    <set>
+      <if test="shipNumber != null">
+        ship_number = #{shipNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        serial_number = #{serialNumber,jdbcType=INTEGER},
+      </if>
+      <if test="batch != null">
+        batch = #{batch,jdbcType=INTEGER},
+      </if>
+      <if test="segmentation != null">
+        segmentation = #{segmentation,jdbcType=VARCHAR},
+      </if>
+      <if test="partNumber != null">
+        part_number = #{partNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="thickness != null">
+        thickness = #{thickness,jdbcType=INTEGER},
+      </if>
+      <if test="width != null">
+        width = #{width,jdbcType=INTEGER},
+      </if>
+      <if test="length != null">
+        length = #{length,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="numberParts != null">
+        number_parts = #{numberParts,jdbcType=INTEGER},
+      </if>
+      <if test="group != null">
+        group = #{group,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="replenishmentStatus != null">
+        replenishment_status = #{replenishmentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        register_date = #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.teacherbe.entity.AccCommonInfo">
+    update t_acc_commoninfo
+    set ship_number = #{shipNumber,jdbcType=VARCHAR},
+      serial_number = #{serialNumber,jdbcType=INTEGER},
+      batch = #{batch,jdbcType=INTEGER},
+      segmentation = #{segmentation,jdbcType=VARCHAR},
+      part_number = #{partNumber,jdbcType=VARCHAR},
+      thickness = #{thickness,jdbcType=INTEGER},
+      width = #{width,jdbcType=INTEGER},
+      length = #{length,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      number_parts = #{numberParts,jdbcType=INTEGER},
+      group = #{group,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      replenishment_status = #{replenishmentStatus,jdbcType=INTEGER},
+      register_date = #{registerDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR},
+      updater = #{updater,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

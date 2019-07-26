@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacherbe.dao.AccSeplenishmentMapper">
+  <resultMap id="BaseResultMap" type="cn.teacherbe.entity.AccSeplenishment">
+  <id column="id" jdbcType="INTEGER" property="id" />
+  <result column="common_id" jdbcType="INTEGER" property="commonId" />
+  <result column="replenishment_status" jdbcType="INTEGER" property="replenishmentStatus" />
+  <result column="arrival_status" jdbcType="INTEGER" property="arrivalStatus" />
+  <result column="number_plate" jdbcType="VARCHAR" property="numberPlate" />
+  <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+  <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  <result column="creator" jdbcType="VARCHAR" property="creator" />
+  <result column="updater" jdbcType="VARCHAR" property="updater" />
+  <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+</resultMap>
+  <resultMap id="BaseResultMap2" type="cn.teacherbe.entity.AccSeplenishmentInfo">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="replenishment_status" jdbcType="INTEGER" property="replenishmentStatus" />
+    <result column="arrival_status" jdbcType="INTEGER" property="arrivalStatus" />
+    <result column="number_plate" jdbcType="VARCHAR" property="numberPlate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <resultMap id="BaseResultMap3" type="cn.teacherbe.entity.PairEntity">
+    <result column="common_id" jdbcType="INTEGER" property="id" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, common_id, replenishment_status, arrival_status, number_plate, register_date, 
+    update_date, creator, updater, delete_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_acc_seplenishment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap2">
+    select a.* from
+    (select
+    t.id,t2.ship_number,t2.batch,t2.part_number,t.replenishment_status,t.arrival_status,t.number_plate,t.update_date
+    from t_acc_seplenishment t
+		LEFT JOIN t_acc_commoninfo t2 ON t.common_id = t2.id
+    where t.delete_flag = 0
+    AND (t.replenishment_status = 1 OR t.arrival_status = 1)
+		) a
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllCount" resultType="Integer">
+    select count(*) from
+    (select
+    t.id,t2.ship_number,t2.batch,t2.part_number,t.replenishment_status,t.arrival_status,t.number_plate,t.update_date
+    from t_acc_seplenishment t
+		LEFT JOIN t_acc_commoninfo t2 ON t.common_id = t2.id
+    where t.delete_flag = 0
+    AND (t.replenishment_status = 1 OR t.arrival_status = 1)
+		) a
+  </select>
+  <select id="selectUnPair" resultMap="BaseResultMap3">
+    SELECT t.common_id,t1.part_number
+    FROM t_acc_seplenishment t
+    LEFT JOIN t_acc_commoninfo t1 ON t.common_id = t1.id
+    WHERE t.arrival_status = 0
+    AND t.replenishment_status = 0
+    AND t.number_plate is not null
+    AND t.delete_flag = 0
+    AND t1.delete_flag = 0
+    AND t.id IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_acc_seplenishment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertInit">
+
+    insert into t_acc_seplenishment (id, common_id, replenishment_status,
+      arrival_status, number_plate, register_date,
+      update_date, creator, updater,
+      delete_flag)
+    values
+    <foreach collection="idGroup" item="item" index="index" separator=",">
+    (null, #{item}, 1,
+      1, null, #{registerDate,jdbcType=TIMESTAMP},
+      #{updateDate,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR},
+      0)
+    </foreach>
+  </insert>
+  <update id="seplenishmentConfirm1" >
+    <foreach collection="idGroup" item="item" index="index" separator=";">
+    UPDATE t_acc_seplenishment SET replenishment_status = #{item.replenishmentStatus},
+    number_plate = #{item.numberPlate},
+    updater = #{updater,jdbcType=VARCHAR},
+    update_date = SYSDATE()
+    WHERE
+    delete_flag = 0
+    AND ID = #{item.id}
+    </foreach>
+  </update>
+  <update id="seplenishmentConfirm2" >
+    <foreach collection="idGroup" item="item" index="index" separator=";">
+      UPDATE t_acc_seplenishment SET arrival_status = #{item.arrivalStatus},
+      updater = #{updater,jdbcType=VARCHAR},
+      update_date = SYSDATE()
+      WHERE
+      delete_flag = 0
+      AND ID = #{item.id}
+    </foreach>
+  </update>
+  <insert id="insert" parameterType="cn.teacherbe.entity.AccSeplenishment">
+    insert into t_acc_seplenishment (id, common_id, replenishment_status, 
+      arrival_status, number_plate, register_date, 
+      update_date, creator, updater, 
+      delete_flag)
+    values (#{id,jdbcType=INTEGER}, #{commonId,jdbcType=INTEGER}, #{replenishmentStatus,jdbcType=INTEGER}, 
+      #{arrivalStatus,jdbcType=INTEGER}, #{numberPlate,jdbcType=VARCHAR}, #{registerDate,jdbcType=TIMESTAMP}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, 
+      #{deleteFlag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.teacherbe.entity.AccSeplenishment">
+    insert into t_acc_seplenishment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="commonId != null">
+        common_id,
+      </if>
+      <if test="replenishmentStatus != null">
+        replenishment_status,
+      </if>
+      <if test="arrivalStatus != null">
+        arrival_status,
+      </if>
+      <if test="numberPlate != null">
+        number_plate,
+      </if>
+      <if test="registerDate != null">
+        register_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="commonId != null">
+        #{commonId,jdbcType=INTEGER},
+      </if>
+      <if test="replenishmentStatus != null">
+        #{replenishmentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="arrivalStatus != null">
+        #{arrivalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="numberPlate != null">
+        #{numberPlate,jdbcType=VARCHAR},
+      </if>
+      <if test="registerDate != null">
+        #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacherbe.entity.AccSeplenishment">
+    update t_acc_seplenishment
+    <set>
+      <if test="commonId != null">
+        common_id = #{commonId,jdbcType=INTEGER},
+      </if>
+      <if test="replenishmentStatus != null">
+        replenishment_status = #{replenishmentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="arrivalStatus != null">
+        arrival_status = #{arrivalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="numberPlate != null">
+        number_plate = #{numberPlate,jdbcType=VARCHAR},
+      </if>
+      <if test="registerDate != null">
+        register_date = #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.teacherbe.entity.AccSeplenishment">
+    update t_acc_seplenishment
+    set common_id = #{commonId,jdbcType=INTEGER},
+      replenishment_status = #{replenishmentStatus,jdbcType=INTEGER},
+      arrival_status = #{arrivalStatus,jdbcType=INTEGER},
+      number_plate = #{numberPlate,jdbcType=VARCHAR},
+      register_date = #{registerDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR},
+      updater = #{updater,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

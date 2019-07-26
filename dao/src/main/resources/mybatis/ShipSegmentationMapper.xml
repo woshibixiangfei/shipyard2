@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacherbe.dao.ShipSegmentationMapper">
+  <resultMap id="BaseResultMap" type="cn.teacherbe.entity.ShipSegmentation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="ship_id" jdbcType="INTEGER" property="shipId" />
+    <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="cn.teacherbe.entity.Segmentation">
+    <result column="ship_id" jdbcType="INTEGER" property="shipId" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, segmentation, ship_id, register_date, update_date, creator, updater, delete_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_ship_segmentation
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAll"  resultType="String">
+    SELECT segmentation FROM t_ship_segmentation t1
+    LEFT JOIN t_ship_number t2 ON t1.ship_id = t2.id
+    WHERE t2.delete_flag = 0
+    AND t1.delete_flag = 0
+    AND t2.ship_number = #{shipNumber,jdbcType=VARCHAR}
+    ORDER BY segmentation
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAllCount"  resultType="Integer">
+    SELECT count(*) FROM t_ship_segmentation t1
+    LEFT JOIN t_ship_number t2 ON t1.ship_id = t2.id
+    WHERE t2.delete_flag = 0
+    AND t1.delete_flag = 0
+    AND t2.ship_number = #{shipNumber,jdbcType=VARCHAR}
+    ORDER BY segmentation
+  </select>
+
+  <select id="querySegmentation" parameterType="java.lang.String" resultMap="BaseResultMap2">
+    SELECT (select t1.id from t_ship_number t1 where t1.ship_number = t.ship_number) as ship_id,t.segmentation
+    FROM t_acc_commoninfo t
+    WHERE t.delete_flag = 0
+    AND t.ship_number = #{shipNumber,jdbcType=VARCHAR}
+    GROUP BY t.segmentation;
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_ship_segmentation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.teacherbe.entity.ShipSegmentation">
+    insert into t_ship_segmentation (id, segmentation, ship_id, 
+      register_date, update_date, creator, 
+      updater, delete_flag)
+    values (#{id,jdbcType=INTEGER}, #{segmentation,jdbcType=VARCHAR}, #{shipId,jdbcType=INTEGER}, 
+      #{registerDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, 
+      #{updater,jdbcType=VARCHAR}, #{deleteFlag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.teacherbe.entity.ShipSegmentation">
+    insert into t_ship_segmentation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="segmentation != null">
+        segmentation,
+      </if>
+      <if test="shipId != null">
+        ship_id,
+      </if>
+      <if test="registerDate != null">
+        register_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="segmentation != null">
+        #{segmentation,jdbcType=VARCHAR},
+      </if>
+      <if test="shipId != null">
+        #{shipId,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacherbe.entity.ShipSegmentation">
+    update t_ship_segmentation
+    <set>
+      <if test="segmentation != null">
+        segmentation = #{segmentation,jdbcType=VARCHAR},
+      </if>
+      <if test="shipId != null">
+        ship_id = #{shipId,jdbcType=INTEGER},
+      </if>
+      <if test="registerDate != null">
+        register_date = #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.teacherbe.entity.ShipSegmentation">
+    update t_ship_segmentation
+    set segmentation = #{segmentation,jdbcType=VARCHAR},
+      ship_id = #{shipId,jdbcType=INTEGER},
+      register_date = #{registerDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR},
+      updater = #{updater,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
