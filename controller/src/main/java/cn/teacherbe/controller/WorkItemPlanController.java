@@ -65,7 +65,7 @@ public class WorkItemPlanController {
     /*
      * @author 毕翔斐
      * @version 1.0
-     * @description 认领
+     * @description 装配列表
      * */
     @RequestMapping(value = "/getAssemblyInfo")
     public String getAssemblyInfo(Integer pageNo, Integer pageSize, String admin,String adminRole){

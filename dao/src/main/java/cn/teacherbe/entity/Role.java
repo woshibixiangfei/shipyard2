@@ -7,15 +7,11 @@ public class Role {
 
     private String name;
 
-    private Integer level;
-
-    private Integer superior;
-
     private Integer deleteFlag;
 
-    private String registerDate;
+    private Date registerDate;
 
-    private String updateDate;
+    private Date updateDate;
 
     private String creator;
 
@@ -37,22 +33,6 @@ public class Role {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
-    public Integer getSuperior() {
-        return superior;
-    }
-
-    public void setSuperior(Integer superior) {
-        this.superior = superior;
-    }
-
     public Integer getDeleteFlag() {
         return deleteFlag;
     }
@@ -61,19 +41,19 @@ public class Role {
         this.deleteFlag = deleteFlag;
     }
 
-    public String getRegisterDate() {
+    public Date getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(String registerDate) {
+    public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
     }
 
-    public String getUpdateDate() {
+    public Date getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(String updateDate) {
+    public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
 

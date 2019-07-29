@@ -216,11 +216,13 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
         try {
             String dateNow = new DateUtils().dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-            if (adminRole.equals("-1") && StringUtil.notEmpty(idGroup)) {
+            if (adminRole.equals("-1")) {
                 this.accCommonInfoMapper.updateById3(admin, dateNow);
                 List<String> result = Arrays.asList(idGroup.split(","));
-                this.accCommonInfoMapper.updateById2(admin, dateNow, result);
-                this.accSeplenishmentMapper.insertInit(result, admin, dateNow, admin, dateNow);
+                if(!StringUtil.notEmpty(idGroup)) {
+                    this.accCommonInfoMapper.updateById2(admin, dateNow, result);
+                    this.accSeplenishmentMapper.insertInit(result, admin, dateNow, admin, dateNow);
+                }
                 List<AccCommonInfo> AccCommonInfoPairList = this.accCommonInfoMapper.selectPair();
                 List<AccCommonInfo> AccCommonInfoPairList2 = AccCommonInfoPairList;
                 WorkitemRelation workitemRelation = new WorkitemRelation();

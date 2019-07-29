@@ -17,9 +17,9 @@
 
         <!--数据库连接 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/shipyard?characterEncoding=utf-8"
+                        connectionURL="jdbc:mysql://39.106.176.166:3306/shipyard?characterEncoding=utf-8"
                         userId="root"
-                        password="060659">
+                        password="guying">
         </jdbcConnection>
         <!--默认false
            Java type resolver will always use java.math.BigDecimal if the database column is of type DECIMAL or NUMERIC.
@@ -53,7 +53,13 @@
                enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>
         <table tableName="t_workitem_relation" domainObjectName="WorkitemRelation"
                enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>-->
-        <table tableName="t_workitem" domainObjectName="WorkItem"
+        <!--<table tableName="t_workitem" domainObjectName="WorkItem"
+               enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>-->
+        <table tableName="t_admin" domainObjectName="Admin"
+               enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>
+        <table tableName="t_role" domainObjectName="Role"
+               enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>
+        <table tableName="t_admin_role" domainObjectName="AdminRole"
                enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>
     </context>
 </generatorConfiguration>

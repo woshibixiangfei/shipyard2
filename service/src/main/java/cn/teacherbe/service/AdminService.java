@@ -1,12 +1,10 @@
 package cn.teacherbe.service;
 
 import cn.teacherbe.entity.Admin;
-import cn.teacherbe.entity.AdminRoleModel;
 import net.sf.json.JSONObject;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 
 public interface AdminService {

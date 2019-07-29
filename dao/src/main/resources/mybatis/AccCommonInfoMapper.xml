@@ -107,9 +107,8 @@
     LEFT JOIN t_acc_seplenishment t1 ON t.id = t1.common_id
     where
     t.delete_flag = 0
-    AND t1.delete_flag = 0
     AND t.`status` not in (0,1)
-    OR t1.id is null
+    AND t.replenishment_status = 0
     ORDER BY t.register_date desc
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
@@ -121,9 +120,8 @@
     LEFT JOIN t_acc_seplenishment t1 ON t.id = t1.common_id
     where
     t.delete_flag = 0
-    AND t1.delete_flag = 0
     AND t.`status` not in (0,1)
-    OR t1.id is null
+    AND t.replenishment_status = 0
     ORDER BY t.register_date desc
   </select>
 
