@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacherbe.dao.WorkItemMapper">
+  <resultMap id="BaseResultMap" type="cn.teacherbe.entity.WorkItem">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="workItem_id" jdbcType="INTEGER" property="workitemId" />
+    <result column="now" jdbcType="VARCHAR" property="now" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, workItem_id, now, type, description, register_date, update_date, creator, updater, 
+    delete_flag
+  </sql>
+  <select id="selectProcess" resultType="Integer">
+    select
+    substring_index(substring_index(a.process,',',b.help_topic_id+1),',',-1)
+    from t_workitem_relation a
+    join  mysql.help_topic b  on b.help_topic_id &lt;(length(a.process) - length(replace(a.process,',',''))+1)
+    WHERE a.id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_workitem
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByWrokId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_workitem
+    where workItem_id = #{workItemId,jdbcType=INTEGER}
+    and type = #{type,jdbcType=INTEGER}
+    AND now = 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_workitem
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert">
+    insert into t_workitem (id, workItem_id, now,
+      type, description, register_date,
+      update_date, creator, updater,
+      delete_flag)
+    values
+    <foreach collection="idGroup" item="item" index="index" separator=",">
+      (null, #{item}, 1,
+      #{type,jdbcType=INTEGER},
+      CONCAT(
+      (select name FROM t_role c where c.id in (
+      SELECT b.role_id from t_admin a
+      LEFT JOIN t_admin_role b ON a.id = b.admin_id
+      WHERE
+      a.delete_flag = 0
+      AND a.`no` = 'yikuayiban'
+      )
+      AND c.name like '%跨%'
+      ),#{typeName,jdbcType=VARCHAR}), SYSDATE(),
+      SYSDATE(), #{no,jdbcType=VARCHAR}, #{no,jdbcType=VARCHAR},
+      0)
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="cn.teacherbe.entity.WorkItem">
+    insert into t_workitem
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="workitemId != null">
+        workItem_id,
+      </if>
+      <if test="now != null">
+        now,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="registerDate != null">
+        register_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="workitemId != null">
+        #{workitemId,jdbcType=INTEGER},
+      </if>
+      <if test="now != null">
+        #{now,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="registerDate != null">
+        #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacherbe.entity.WorkItem">
+    update t_workitem
+    <set>
+      <if test="workitemId != null">
+        workItem_id = #{workitemId,jdbcType=INTEGER},
+      </if>
+      <if test="now != null">
+        now = #{now,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="registerDate != null">
+        register_date = #{registerDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.teacherbe.entity.WorkItem">
+    update t_workitem
+    set workItem_id = #{workitemId,jdbcType=INTEGER},
+      now = #{now,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      description = #{description,jdbcType=VARCHAR},
+      register_date = #{registerDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR},
+      updater = #{updater,jdbcType=VARCHAR},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
