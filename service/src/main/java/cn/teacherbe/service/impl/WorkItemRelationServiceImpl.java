@@ -254,11 +254,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("7") || roleList.get(t).equals("8")
-                        || roleList.get(t).equals("9")
-                        || roleList.get(t).equals("10")
-                        || roleList.get(t).equals("13")
-                        || roleList.get(t).equals("14")) {
+                if (roleList.get(t).equals("11") || roleList.get(t).equals("12") ) {
                     if (StringUtil.notEmpty(type)) {
                         Integer current = pageNo;
                         pageNo = (pageNo - 1) * pageSize;
@@ -280,9 +276,6 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                         return jsonStr;
                     }
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -300,70 +293,34 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         JSONObject json = new JSONObject();
         try {
             List<String> roleList = this.adminService.getRole(admin);
+            String typeName = null;
+            if(type == 1){
+                typeName = "平面校直";
+            } else if(type == 2){
+                typeName = "线性校直";
+            } else if(type == 3){
+                typeName = "焊接";
+            } else if(type == 4){
+                typeName = "线性焊透";
+            }
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("7") || roleList.get(t).equals("8")
-                        || roleList.get(t).equals("9")
-                        || roleList.get(t).equals("10")
-                        || roleList.get(t).equals("13")
-                        || roleList.get(t).equals("14")) {
+                if (roleList.get(t).equals("12")) {
                     List<String> result = Arrays.asList(idGroup.split(","));
 
-                    int status = this.workItemMapper.insertInit(result, admin);
-                    if (type == 1) {
-                        this.workItemMapper.updateWorkitem1(result, admin);
-                    } else if (type == 2) {
-                        this.workItemMapper.updateWorkitem2(result, admin);
-                    } else if (type == 3) {
-                        this.workItemMapper.updateWorkitem3(result, admin);
-                    } else if (type == 4) {
-                        this.workItemMapper.updateWorkitem4(result, admin);
-                    } else {
-                        json.put("status", "failed");
-                        return json.toString();
-                    }
+                    int status = this.workItemMapper.insert(admin,result,type,typeName);
                     //List<String> result = Arrays.asList(idGroup.split(","));
                     //this.workItemRealationMapper.assembly(AssemblyInfoList,admin);
-                    Integer straightStatus = 0;
-                    Integer linearStatus = 0;
-                    Integer solderingStatus = 0;
-                    Integer linearWeldingStatus = 0;
                     for (int i = 0; i < result.size(); i++) {
                         List<Integer> idTeam = this.workItemMapper.selectProcess(Integer.parseInt(result.get(i)));
-                        WorkItem workItem = this.workItemMapper.selectByWorkId(Integer.parseInt(result.get(i)));
+                        //WorkItem workItem = this.workItemMapper.selectByWorkId(Integer.parseInt(result.get(i)));
                         for (int j = 0; j < idTeam.size(); j++) {
-                            if (idTeam.get(j) == 1) {
-                                if (workItem.getStraight() == 1) {
-                                    straightStatus = 2;
-                                } else {
-                                    straightStatus = 1;
-                                }
+                            List<WorkItem> workList = this.workItemMapper.selectByWrokId(Integer.parseInt(result.get(i)),idTeam.get(j));
+                            if(workList == null || workList.isEmpty()){
+                                json.put("status", "success");
+                                return json.toString();
                             }
-                            if (idTeam.get(j) == 2) {
-                                if (workItem.getLinear() == 1) {
-                                    linearStatus = 2;
-                                } else {
-                                    linearStatus = 1;
-                                }
-                            }
-                            if (idTeam.get(j) == 3) {
-                                if (workItem.getSoldering() == 1) {
-                                    solderingStatus = 2;
-                                } else {
-                                    solderingStatus = 1;
-                                }
-                            }
-                            if (idTeam.get(j) == 4) {
-                                if (workItem.getLinearWelding() == 1) {
-                                    linearWeldingStatus = 2;
-                                } else {
-                                    linearWeldingStatus = 1;
-                                }
-                            }
-
                         }
-                        if (straightStatus != 1 && linearStatus != 1 && solderingStatus != 1 && linearWeldingStatus != 1) {
                             this.workItemRealationMapper.done(Integer.parseInt(result.get(i)), admin);
-                        }
                     }
                     json.put("status", "success");
                     return json.toString();
@@ -387,7 +344,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                 ) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<TaskInfo> OutInfoList = this.workItemRealationMapper.selectOutInfo(pageNo, pageSize);
+                    List<OutInfo> OutInfoList = this.workItemRealationMapper.selectOutInfo(pageNo, pageSize);
                     JSONArray jsonObject = JSONArray.fromObject(OutInfoList);
                     Integer total = this.workItemRealationMapper.selectOutInfoCount();
                     Integer totalPage = (total + pageSize - 1) / pageSize;
@@ -416,6 +373,73 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         }
         JSONObject json = new JSONObject();
         json.put("status", "failed");
+        return json.toString();
+    }
+
+    @Override
+    public String getWeldingSelect(Integer pageNo, Integer pageSize, String admin) {
+        try{
+            List<String> roleList = this.adminService.getRole(admin);
+            for (int t = 0; t < roleList.size(); t++) {
+                if (roleList.get(t).equals("11") || roleList.get(t).equals("4") || roleList.get(t).equals("5")
+                        || roleList.get(t).equals("6") || roleList.get(t).equals("7")|| roleList.get(t).equals("8")
+                        || roleList.get(t).equals("9")
+                        || roleList.get(t).equals("10")
+                        || roleList.get(t).equals("13")
+                        || roleList.get(t).equals("14")){
+                    Integer current = pageNo;
+                    pageNo = (pageNo - 1) * pageSize;
+                    List<WorkItem> TaskList = this.workItemRealationMapper.getWeldingSelect(pageNo, pageSize);
+                    JSONArray jsonObject = JSONArray.fromObject(TaskList);
+                    Integer total = this.workItemRealationMapper.getWeldingSelectCount();
+                    Integer totalPage = (total + pageSize - 1) / pageSize;
+                    JSONObject json = new JSONObject();
+                    json.put("status", "success");
+                    JSONObject data = new JSONObject();
+                    data.put("total", total);
+                    data.put("totalPage", totalPage);
+                    data.put("pageNo", current);
+                    data.put("pageSize", TaskList.size());
+                    JSONArray jsonArray = JSONArray.fromObject(jsonObject);
+                    data.put("record", jsonArray);
+                    json.put("data", data);
+                    String jsonStr = json.toString();
+                    return jsonStr;
+                }
+                JSONObject json = new JSONObject();
+                json.put("status", "failed");
+                return json.toString();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            JSONObject json = new JSONObject();
+            json.put("status", "failed");
+            return json.toString();
+        }
+        JSONObject json = new JSONObject();
+        json.put("status", "failed");
+        return json.toString();
+    }
+
+    @Override
+    public String out(String idGroup, String admin, String carNumber) {
+        JSONObject json = new JSONObject();
+        try {
+            List<String> roleList = this.adminService.getRole(admin);
+            for (int t = 0; t < roleList.size(); t++) {
+                if (roleList.get(t).equals("11") || roleList.get(t).equals("3")) {
+                    List<String> result = Arrays.asList(idGroup.split(","));
+                    this.workItemRealationMapper.out(result, carNumber,admin);
+                    json.put("status", "success");
+                    return json.toString();
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            json.put("status","failed");
+            return json.toString();
+        }
+        json.put("status","failed");
         return json.toString();
     }
 

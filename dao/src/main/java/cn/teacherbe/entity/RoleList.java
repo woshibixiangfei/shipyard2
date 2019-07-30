@@ -15,6 +15,8 @@ public class RoleList {
 
     private String roleId;
 
+    private String password;
+
     public Integer getId() {
         return id;
     }
@@ -69,5 +71,13 @@ public class RoleList {
 
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

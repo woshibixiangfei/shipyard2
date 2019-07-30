@@ -53,13 +53,13 @@
                enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>
         <table tableName="t_workitem_relation" domainObjectName="WorkitemRelation"
                enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>-->
-        <!--<table tableName="t_workitem" domainObjectName="WorkItem"
-               enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>-->
-        <table tableName="t_admin" domainObjectName="Admin"
+        <table tableName="t_workitem" domainObjectName="WorkItem"
+               enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>
+        <!--<table tableName="t_admin" domainObjectName="Admin"
                enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>
         <table tableName="t_role" domainObjectName="Role"
-               enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>
-        <table tableName="t_admin_role" domainObjectName="AdminRole"
-               enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>
+               enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>-->
+        <!--<table tableName="t_admin_role" domainObjectName="AdminRole"
+               enableCountByExample="false" enableSelectByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"></table>-->
     </context>
 </generatorConfiguration>

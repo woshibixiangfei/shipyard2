@@ -1,9 +1,6 @@
 package cn.teacherbe.dao;
 
-import cn.teacherbe.entity.AssemblyInfo;
-import cn.teacherbe.entity.TaskInfo;
-import cn.teacherbe.entity.WorkitemRelation;
-import cn.teacherbe.entity.WorkitemRelationPlan;
+import cn.teacherbe.entity.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -27,7 +24,7 @@ public interface WorkitemRelationMapper {
 
     List<WorkitemRelationPlan> selectWeldingInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("no")String admin,@Param("type")Integer type);
 
-    List<TaskInfo> selectOutInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+    List<OutInfo> selectOutInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
     Integer selectOutInfoCount();
 
@@ -41,6 +38,10 @@ public interface WorkitemRelationMapper {
 
     Integer selectWeldingInfoCount(@Param("no")String admin,@Param("type")Integer type);
 
+    List<WorkItem> getWeldingSelect(@Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize);
+
+    Integer getWeldingSelectCount();
+
     int underPlan(@Param("updater")String updater,@Param("idGroup")List<String> idGroup,@Param("kua")String kua);
 
     int claim(@Param("idGroup")List<String> idGroup,@Param("no")String no);
@@ -48,6 +49,8 @@ public interface WorkitemRelationMapper {
     int assembly(@Param("idGroup")List<AssemblyInfo> idGroup, @Param("no")String no);
 
     int done(@Param("id")Integer id, @Param("no")String no);
+
+    int out(@Param("idGroup")List<String> idGroup,  @Param("carNumber")String carNumber,@Param("no")String no);
 
     int updateByPrimaryKeySelective(WorkitemRelation record);
 

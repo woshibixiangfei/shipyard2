@@ -109,11 +109,33 @@ public class WorkItemPlanController {
     /*
      * @author 毕翔斐
      * @version 1.0
+     * @description 焊接统计
+     * */
+    @RequestMapping(value = "/getWeldingSelect")
+    public String getWeldingSelect(Integer pageNo, Integer pageSize, String admin){
+        String welding = this.workItemRelationService.getWeldingSelect(pageNo,pageSize,admin);
+        return welding;
+    }
+
+    /*
+     * @author 毕翔斐
+     * @version 1.0
      * @description 获取出库列表
      * */
     @RequestMapping(value = "/getOutInfo")
     public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String adminRole){
         String getOutInfo = this.workItemRelationService.getOutInfo(pageNo,pageSize,admin);
         return getOutInfo;
+    }
+
+    /*
+     * @author 毕翔斐
+     * @version 1.0
+     * @description 出库
+     * */
+    @RequestMapping(value = "/out")
+    public String out(String idGroup,String admin,String carNumber){
+        String welding = this.workItemRelationService.out(idGroup,admin,carNumber);
+        return welding;
     }
 }

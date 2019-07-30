@@ -22,6 +22,7 @@
     <result column="no" jdbcType="VARCHAR" property="no" />
     <result column="role" jdbcType="VARCHAR" property="role" />
     <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
   </resultMap>
   <sql id="Base_Column_List">
     id, name, department, post, no, password, delete_flag, register_date, update_date, 
@@ -35,7 +36,7 @@
   </select>
   <select id="selectRoleList" resultMap="BaseResultMap2">
     SELECT t.id,t.name,t.department,t.post,t.no,GROUP_CONCAT((select name from t_role t3 where t3.id = t2.role_id) SEPARATOR ',') AS role,
-    GROUP_CONCAT(t2.role_id SEPARATOR ',') AS role_id
+    GROUP_CONCAT(t2.role_id SEPARATOR ',') AS role_id,t.password
     FROM t_admin t
     LEFT JOIN t_admin_role t2 ON t.id = t2.admin_id
     WHERE t.delete_flag= 0

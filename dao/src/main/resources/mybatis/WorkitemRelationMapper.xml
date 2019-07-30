@@ -19,26 +19,37 @@
   <resultMap id="BaseResultMap2" type="cn.teacherbe.entity.WorkitemRelationPlan">
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
-    <result column="ship_number2" jdbcType="VARCHAR" property="shipNumber2" />
     <result column="batch" jdbcType="INTEGER" property="batch" />
-    <result column="batch2" jdbcType="INTEGER" property="batch2" />
     <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
-    <result column="segmentation2" jdbcType="VARCHAR" property="segmentation2" />
     <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
-    <result column="part_number2" jdbcType="VARCHAR" property="partNumber2" />
   </resultMap>
   <resultMap id="BaseResultMap3" type="cn.teacherbe.entity.TaskInfo">
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
-    <result column="ship_number2" jdbcType="VARCHAR" property="shipNumber" />
     <result column="batch" jdbcType="INTEGER" property="batch" />
-    <result column="batch2" jdbcType="INTEGER" property="batch2" />
     <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
-    <result column="segmentation2" jdbcType="VARCHAR" property="segmentation2" />
     <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
-    <result column="part_number2" jdbcType="VARCHAR" property="partNumber2" />
     <result column="workitem_status" jdbcType="VARCHAR" property="workitemStatus" />
     <result column="executive_class" jdbcType="VARCHAR" property="executiveClass" />
+  </resultMap>
+  <resultMap id="BaseResultMap4" type="cn.teacherbe.entity.WorkItemInfo">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+
+  </resultMap>
+  <resultMap id="BaseResultMap5" type="cn.teacherbe.entity.OutInfo">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="workitem_status" jdbcType="VARCHAR" property="workitemStatus" />
+    <result column="executive_class" jdbcType="VARCHAR" property="executiveClass" />
+    <result column="car_number" jdbcType="VARCHAR" property="carNumber" />
   </resultMap>
   <sql id="Base_Column_List">
     id, one_common_id, two_common_id, execution_cross, executive_class, check_if, process, 
@@ -63,8 +74,7 @@
     where two_common_id = #{commonId2,jdbcType=INTEGER}
   </select>
   <select id="selectPlan" resultMap="BaseResultMap2">
-    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,t2.ship_number as ship_number2,
-    t2.batch as batch2,t2.segmentation as segmentation2,
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
@@ -93,18 +103,18 @@
   </select>
 
   <select id="selectTaskInfo" resultMap="BaseResultMap3">
-    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,t1.part_number,t2.ship_number as ship_number2,
-    t2.batch as batch2,t2.segmentation as segmentation2,t2.part_number as part_number2,t.workitem_status,t.executive_class
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,t.workitem_status,t.executive_class
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status IN (0,1)
-    AND t.execution_cross = (
+    AND t.execution_cross &lt;&gt; 'nothing'
+    AND t.execution_cross in (
     SELECT
-    CASE WHEN c.id=7 or c.id=8 THEN 1 WHEN c.id=9 or c.id=10 THEN 2 WHEN c.id=13 or c.id=14 THEN 3 ELSE 0 END
-    FROM t_role c where c.id = (
+    CASE WHEN c.id=7 or c.id=8 or c.id=4 THEN 1 WHEN c.id=9 or c.id=10 or c.id=5 THEN 2 WHEN c.id=13 or c.id=14 or c.id=6 THEN 3 ELSE 0 END
+    FROM t_role c where c.id in (
     SELECT b.role_id from t_admin a
     LEFT JOIN t_admin_role b ON a.id = b.admin_id
     WHERE
@@ -123,10 +133,11 @@
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status IN (0,1)
-    AND t.execution_cross = (
+    AND t.execution_cross &lt;&gt; 'nothing'
+    AND t.execution_cross in (
     SELECT
-    CASE WHEN c.id=7 or c.id=8 THEN 1 WHEN c.id=9 or c.id=10 THEN 2 WHEN c.id=13 or c.id=14 THEN 3 ELSE 0 END
-    FROM t_role c where c.id = (
+    CASE WHEN c.id=7 or c.id=8 or c.id=4 THEN 1 WHEN c.id=9 or c.id=10 or c.id=5 THEN 2 WHEN c.id=13 or c.id=14 or c.id=6 THEN 3 ELSE 0 END
+    FROM t_role c where c.id in (
     SELECT b.role_id from t_admin a
     LEFT JOIN t_admin_role b ON a.id = b.admin_id
     WHERE
@@ -137,31 +148,35 @@
   </select>
 
   <select id="selectAssemblyInfo" resultMap="BaseResultMap2">
-    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,t1.part_number,t2.ship_number as ship_number2,
-    t2.batch as batch2,t2.segmentation as segmentation2,t2.part_number as part_number2
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status IN (0,1)
-    AND t.execution_cross = (
+    AND t.execution_cross in (
     SELECT
-    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    CASE WHEN c.id=7 or c.id=8 or c.id=4 THEN 1 WHEN c.id=9 or c.id=10 or c.id=5 THEN 2 WHEN c.id=13 or c.id=14 or c.id=6 THEN 3 ELSE 0 END
+    FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
     WHERE
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
     )
-    AND t.executive_class = (SELECT c.id
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
-    WHERE a.`no` = #{no,jdbcType=VARCHAR}
-    ))
+    AND t.executive_class in (
+    SELECT
+    c.id
+    FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+    )
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
@@ -173,55 +188,43 @@
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status IN (0,1)
-    AND t.execution_cross = (
+    AND t.execution_cross in (
     SELECT
-    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    CASE WHEN c.id=7 or c.id=8 or c.id=4 THEN 1 WHEN c.id=9 or c.id=10 or c.id=5 THEN 2 WHEN c.id=13 or c.id=14 or c.id=6 THEN 3 ELSE 0 END
+    FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
     WHERE
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
     )
-    AND t.executive_class = (SELECT c.id
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
-    WHERE a.`no` = #{no,jdbcType=VARCHAR}
-    ))
+    AND t.executive_class in (
+    SELECT
+    c.id
+    FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+    )
   </select>
 
   <select id="selectWeldingInfo" resultMap="BaseResultMap2">
-    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,t1.part_number,
-    t2.ship_number as ship_number2,
-    t2.batch as batch2,t2.segmentation as segmentation2,
-    t2.part_number as part_number2,t.workitem_status,t.executive_class
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,t.workitem_status,t.executive_class
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status = 2
     AND t.check_if = 1
     AND t.process &lt;&gt; 'nothing'
-    AND t.execution_cross = (
-    SELECT
-    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
-    WHERE
-    a.delete_flag = 0
-    AND a.`no` = #{no,jdbcType=VARCHAR}
-    )
-    )
-    AND t.executive_class = (SELECT c.id
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
-    WHERE a.`no` = #{no,jdbcType=VARCHAR}
-    ))
+    AND (t3.now = 0 or t3.now is null)
+		AND (t3.type = #{type,jdbcType=INTEGER} or t3.now is null)
     AND t.process like '%${type}%'
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
@@ -231,40 +234,46 @@
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
-    WHERE
+    LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id
+     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status = 2
     AND t.check_if = 1
     AND t.process &lt;&gt; 'nothing'
-    AND t.execution_cross = (
-    SELECT
-    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
-    WHERE
-    a.delete_flag = 0
-    AND a.`no` = #{no,jdbcType=VARCHAR}
-    )
-    )
-    AND t.executive_class = (SELECT c.id
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
-    WHERE a.`no` = #{no,jdbcType=VARCHAR}
-    ))
+    AND (t3.now = 0 or t3.now is null)
+	AND (t3.type = #{type,jdbcType=INTEGER} or t3.now is null)
     AND t.process like '%${type}%'
   </select>
 
-  <select id="selectOutInfo" resultMap="BaseResultMap3">
-    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,t1.part_number,t2.ship_number as ship_number2,
-    t2.batch as batch2,t2.segmentation as segmentation2,t2.part_number as part_number2,t.workitem_status
+  <select id="getWeldingSelect" resultMap="BaseResultMap4">
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,t3.description
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+		LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status in(2,3)
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="getWeldingSelectCount" resultType="Integer">
+    SELECT count(*)
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+		LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status in(2,3)
+  </select>
+  <select id="selectOutInfo" resultMap="BaseResultMap5">
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,t.workitem_status,t.car_number
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
-    AND t.workitem_status = 3
+    AND t.workitem_status = 4
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
@@ -275,7 +284,7 @@
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
-    AND t.workitem_status = 3
+    AND t.workitem_status = 4
   </select>
 
   <update id="underPlan" >
@@ -329,7 +338,18 @@
       (delete_flag = 0 OR delete_flag IS NULL)
       AND ID = #{id,jdbcType=INTEGER}
   </update>
-
+  <update id="out" >
+      UPDATE t_workitem_relation SET workitem_status = 4,
+      car_number = #{carNumber,jdbcType=VARCHAR},
+      updater = #{no,jdbcType=VARCHAR},
+      update_date = SYSDATE()
+      WHERE
+      (delete_flag = 0 OR delete_flag IS NULL)
+      AND ID in
+      <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+      </foreach>
+  </update>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_workitem_relation
     where id = #{id,jdbcType=INTEGER}

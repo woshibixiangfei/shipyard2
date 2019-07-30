@@ -135,7 +135,7 @@
     AND replenishment_status = 0
   </select>
 
-  <select id="selectUnPair" resultMap="BaseResultMap2">
+  <select id="selectUnPair" resultMap="BaseResultMap3">
     SELECT id,part_number
     FROM t_acc_commoninfo
     WHERE
