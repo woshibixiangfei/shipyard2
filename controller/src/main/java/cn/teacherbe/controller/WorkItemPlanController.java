@@ -24,8 +24,8 @@ public class WorkItemPlanController {
      * @description 获取下计划列表
      * */
     @RequestMapping(value = "/getPlan")
-    public String getPlan(Integer pageNo, Integer pageSize, String adminRole){
-        String plan = this.workItemRelationService.getPlan(pageNo,pageSize,adminRole);
+    public String getPlan(Integer pageNo, Integer pageSize, String admin){
+        String plan = this.workItemRelationService.getPlan(pageNo,pageSize,admin);
         return plan;
     }
 
@@ -35,8 +35,8 @@ public class WorkItemPlanController {
      * @description 下计划
      * */
     @RequestMapping(value = "/underPlan")
-    public String underPlan(String idGroup, String kua, String admin, String adminRole){
-        String underPlan = this.workItemRelationService.underPlan(idGroup,kua,admin,adminRole);
+    public String underPlan(String idGroup, String kua, String admin){
+        String underPlan = this.workItemRelationService.underPlan(idGroup,kua,admin);
         return underPlan;
     }
 
@@ -46,8 +46,8 @@ public class WorkItemPlanController {
      * @description 获取任务列表
      * */
     @RequestMapping(value = "/getTaskInfo")
-    public String getTaskInfo(Integer pageNo, Integer pageSize, String admin,String adminRole){
-        String TaskInfo = this.workItemRelationService.getTaskInfo(pageNo,pageSize,admin,adminRole);
+    public String getTaskInfo(Integer pageNo, Integer pageSize, String admin){
+        String TaskInfo = this.workItemRelationService.getTaskInfo(pageNo,pageSize,admin);
         return TaskInfo;
     }
 
@@ -57,8 +57,8 @@ public class WorkItemPlanController {
      * @description 认领
      * */
     @RequestMapping(value = "/claim")
-    public String claim(String admin,String adminRole,String idGroup){
-        String claim = this.workItemRelationService.claim(admin,adminRole,idGroup);
+    public String claim(String admin,String idGroup){
+        String claim = this.workItemRelationService.claim(admin,idGroup);
         return claim;
     }
 
@@ -68,8 +68,8 @@ public class WorkItemPlanController {
      * @description 装配列表
      * */
     @RequestMapping(value = "/getAssemblyInfo")
-    public String getAssemblyInfo(Integer pageNo, Integer pageSize, String admin,String adminRole){
-        String claim = this.workItemRelationService.getAssemblyInfo(pageNo,pageSize,admin,adminRole);
+    public String getAssemblyInfo(Integer pageNo, Integer pageSize, String admin){
+        String claim = this.workItemRelationService.getAssemblyInfo(pageNo,pageSize,admin);
         return claim;
     }
 
@@ -79,8 +79,8 @@ public class WorkItemPlanController {
      * @description 装配
      * */
     @RequestMapping(value = "/assembly")
-    public String assembly(String idGroup,String admin,String adminRole){
-        String assembly = this.workItemRelationService.assembly(idGroup,admin,adminRole);
+    public String assembly(String idGroup,String admin){
+        String assembly = this.workItemRelationService.assembly(idGroup,admin);
         return assembly;
     }
 
@@ -90,8 +90,8 @@ public class WorkItemPlanController {
      * @description 获取焊接列表
      * */
     @RequestMapping(value = "/getWeldingInfo")
-    public String getWeldingInfo(Integer pageNo, Integer pageSize, String admin,Integer type,String adminRole){
-        String getWeldingInfo = this.workItemRelationService.getWeldingInfo(pageNo,pageSize,admin,type,adminRole);
+    public String getWeldingInfo(Integer pageNo, Integer pageSize, String admin,Integer type){
+        String getWeldingInfo = this.workItemRelationService.getWeldingInfo(pageNo,pageSize,admin,type);
         return getWeldingInfo;
     }
 
@@ -101,8 +101,8 @@ public class WorkItemPlanController {
      * @description 焊接
      * */
     @RequestMapping(value = "/welding")
-    public String welding(String idGroup,String admin,Integer type,String adminRole){
-        String welding = this.workItemRelationService.welding(idGroup,admin,type,adminRole);
+    public String welding(String idGroup,String admin,Integer type){
+        String welding = this.workItemRelationService.welding(idGroup,admin,type);
         return welding;
     }
 
@@ -113,7 +113,7 @@ public class WorkItemPlanController {
      * */
     @RequestMapping(value = "/getOutInfo")
     public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String adminRole){
-        String getOutInfo = this.workItemRelationService.getOutInfo(pageNo,pageSize,admin,adminRole);
+        String getOutInfo = this.workItemRelationService.getOutInfo(pageNo,pageSize,admin);
         return getOutInfo;
     }
 }

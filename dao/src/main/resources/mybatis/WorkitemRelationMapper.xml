@@ -63,8 +63,8 @@
     where two_common_id = #{commonId2,jdbcType=INTEGER}
   </select>
   <select id="selectPlan" resultMap="BaseResultMap2">
-    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,t1.part_number,t2.ship_number as ship_number2,
-    t2.batch as batch2,t2.segmentation as segmentation2,t2.part_number as part_number2
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,t2.ship_number as ship_number2,
+    t2.batch as batch2,t2.segmentation as segmentation2,
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
@@ -103,10 +103,10 @@
     AND t.workitem_status IN (0,1)
     AND t.execution_cross = (
     SELECT
-    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    CASE WHEN c.id=7 or c.id=8 THEN 1 WHEN c.id=9 or c.id=10 THEN 2 WHEN c.id=13 or c.id=14 THEN 3 ELSE 0 END
+    FROM t_role c where c.id = (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
     WHERE
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
@@ -125,10 +125,10 @@
     AND t.workitem_status IN (0,1)
     AND t.execution_cross = (
     SELECT
-    CASE WHEN c.superior=3 THEN 1 WHEN c.superior=4 THEN 2 WHEN c.superior=5 THEN 3 ELSE 0 END
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
+    CASE WHEN c.id=7 or c.id=8 THEN 1 WHEN c.id=9 or c.id=10 THEN 2 WHEN c.id=13 or c.id=14 THEN 3 ELSE 0 END
+    FROM t_role c where c.id = (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
     WHERE
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
@@ -292,11 +292,14 @@
   <update id="claim" >
     UPDATE t_workitem_relation t
     SET t.executive_class = (SELECT c.id
-    FROM t_department c where c.id = (
-    SELECT b.department_id from t_admin a
-    LEFT JOIN t_admin_department b ON a.id = b.admin_id
-    WHERE a.`no` = #{no,jdbcType=VARCHAR}
-    )),t.workitem_status = 1,t.updater = #{no,jdbcType=VARCHAR}
+    FROM t_role c where c.id = (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+    AND c.name like '%班%'
+    ),t.workitem_status = 1,t.updater = #{no,jdbcType=VARCHAR}
     ,t.update_date = SYSDATE()
     WHERE (t.delete_flag = 0 OR t.delete_flag IS NULL)
     AND t.id IN

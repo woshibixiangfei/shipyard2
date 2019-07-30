@@ -5,19 +5,19 @@ public class WorkitemRelationPlan {
 
     private String shipNumber;
 
-    private String shipNumber2;
+    //private String shipNumber2;
 
     private Integer batch;
 
-    private Integer batch2;
+   // private Integer batch2;
 
     private String segmentation;
 
-    private String segmentation2;
+   // private String segmentation2;
 
     private String partNumber;
 
-    private String partNumber2;
+    //private String partNumber2;
 
     public Integer getId() {
         return id;
@@ -35,13 +35,13 @@ public class WorkitemRelationPlan {
         this.shipNumber = shipNumber;
     }
 
-    public String getShipNumber2() {
+    /*public String getShipNumber2() {
         return shipNumber2;
     }
 
     public void setShipNumber2(String shipNumber2) {
         this.shipNumber2 = shipNumber2;
-    }
+    }*/
 
     public Integer getBatch() {
         return batch;
@@ -51,13 +51,13 @@ public class WorkitemRelationPlan {
         this.batch = batch;
     }
 
-    public Integer getBatch2() {
+    /*public Integer getBatch2() {
         return batch2;
     }
 
     public void setBatch2(Integer batch2) {
         this.batch2 = batch2;
-    }
+    }*/
 
     public String getSegmentation() {
         return segmentation;
@@ -67,13 +67,13 @@ public class WorkitemRelationPlan {
         this.segmentation = segmentation;
     }
 
-    public String getSegmentation2() {
+    /*public String getSegmentation2() {
         return segmentation2;
     }
 
     public void setSegmentation2(String segmentation2) {
         this.segmentation2 = segmentation2;
-    }
+    }*/
 
     public String getPartNumber() {
         return partNumber;
@@ -83,13 +83,13 @@ public class WorkitemRelationPlan {
         this.partNumber = partNumber;
     }
 
-    public String getPartNumber2() {
+    /*public String getPartNumber2() {
         return partNumber2;
     }
 
     public void setPartNumber2(String partNumber2) {
         this.partNumber2 = partNumber2;
-    }
+    }*/
 
 
 }

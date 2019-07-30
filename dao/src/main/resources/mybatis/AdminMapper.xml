@@ -14,6 +14,15 @@
     <result column="creator" jdbcType="VARCHAR" property="creator" />
     <result column="updater" jdbcType="VARCHAR" property="updater" />
   </resultMap>
+  <resultMap id="BaseResultMap2" type="cn.teacherbe.entity.RoleList">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="post" jdbcType="VARCHAR" property="post" />
+    <result column="no" jdbcType="VARCHAR" property="no" />
+    <result column="role" jdbcType="VARCHAR" property="role" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, name, department, post, no, password, delete_flag, register_date, update_date, 
     creator, updater
@@ -24,6 +33,28 @@
     from t_admin
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectRoleList" resultMap="BaseResultMap2">
+    SELECT t.id,t.name,t.department,t.post,t.no,GROUP_CONCAT((select name from t_role t3 where t3.id = t2.role_id) SEPARATOR ',') AS role,
+    GROUP_CONCAT(t2.role_id SEPARATOR ',') AS role_id
+    FROM t_admin t
+    LEFT JOIN t_admin_role t2 ON t.id = t2.admin_id
+    WHERE t.delete_flag= 0
+    GROUP BY t.no
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="selectRoleListCount" resultType="Integer">
+    SELECT count(*)
+    FROM t_admin t
+    WHERE t.delete_flag= 0
+  </select>
+  <select id="selectRoleList2" resultType="String">
+    SELECT
+    GROUP_CONCAT(t2.role_id SEPARATOR ',') AS role_id
+    FROM t_admin t
+    LEFT JOIN t_admin_role t2 ON t.id = t2.admin_id
+    WHERE t.no = #{no,jdbcType=VARCHAR}
+    AND t.delete_flag= 0
+  </select>
   <select id="selectByNo" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -31,19 +62,25 @@
     where no = #{no,jdbcType=VARCHAR}
     AND password = #{password,jdbcType=VARCHAR}
   </select>
+  <select id="selectByAdmin" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_admin
+    where no = #{no,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_admin
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="cn.teacherbe.entity.Admin">
+  <insert id="insert">
     insert into t_admin (id, name, department, 
       post, no, password, 
       delete_flag, register_date, update_date, 
       creator, updater)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR}, 
+    SELECT null, #{name,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR},
       #{post,jdbcType=VARCHAR}, #{no,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{deleteFlag,jdbcType=INTEGER}, #{registerDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
-      #{creator,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR})
+      0, SYSDATE(), SYSDATE(),
+      #{account,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR} FROM DUAL WHERE NOT EXISTS(SELECT * FROM t_admin WHERE no = #{no,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.teacherbe.entity.Admin">
     insert into t_admin
@@ -154,18 +191,17 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="cn.teacherbe.entity.Admin">
+  <update id="updateByPrimaryKey">
     update t_admin
     set name = #{name,jdbcType=VARCHAR},
       department = #{department,jdbcType=VARCHAR},
       post = #{post,jdbcType=VARCHAR},
       no = #{no,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
-      delete_flag = #{deleteFlag,jdbcType=INTEGER},
-      register_date = #{registerDate,jdbcType=TIMESTAMP},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      creator = #{creator,jdbcType=VARCHAR},
-      updater = #{updater,jdbcType=VARCHAR}
+      register_date = SYSDATE(),
+      update_date = SYSDATE(),
+      creator = #{account,jdbcType=VARCHAR},
+      updater = #{account,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

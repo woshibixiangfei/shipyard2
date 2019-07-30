@@ -18,8 +18,8 @@ public class AccIncomingController {
      * @description 获取来料信息
      * */
     @RequestMapping(value = "/getAccInecomingInfo")
-    public String getAccInecomingInfo(Integer pageNo, Integer pageSize, String adminRole){
-        String AccCommonInfo = this.accCommonInfoService.getAccInecoming(pageNo,pageSize,adminRole);
+    public String getAccInecomingInfo(Integer pageNo, Integer pageSize, String admin){
+        String AccCommonInfo = this.accCommonInfoService.getAccInecoming(pageNo,pageSize,admin);
         return AccCommonInfo;
     }
 

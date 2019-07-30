@@ -18,8 +18,8 @@ public class AccCommonInfoController {
      * @description 获取物料信息
      * */
     @RequestMapping(value = "/getAccCommonInfo")
-    public String getAccCommonInfo(String shipNumber, String segmentation, Integer pageNo, Integer pageSize, String adminRole){
-        String AccCommonInfo = this.accCommonInfoService.getAccCommonInfo(shipNumber,segmentation,pageNo,pageSize,adminRole);
+    public String getAccCommonInfo(String shipNumber, String segmentation, Integer pageNo, Integer pageSize, String admin){
+        String AccCommonInfo = this.accCommonInfoService.getAccCommonInfo(shipNumber,segmentation,pageNo,pageSize,admin);
         return AccCommonInfo;
     }
 
@@ -29,8 +29,8 @@ public class AccCommonInfoController {
      * @description 生成发货单
      * */
     @RequestMapping(value = "/generateInvoice")
-    public String generateInvoice(String idGroup, String admin, String adminRole){
-        String status = this.accCommonInfoService.generateInvoice(idGroup,admin,adminRole);
+    public String generateInvoice(String idGroup, String admin){
+        String status = this.accCommonInfoService.generateInvoice(idGroup,admin);
         return status;
     }
 
@@ -40,8 +40,8 @@ public class AccCommonInfoController {
      * @description 获取发货单信息
      * */
     @RequestMapping(value = "/getInvoiceInfo")
-    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String adminRole){
-        String InvoiceInfo = this.accCommonInfoService.getInvoiceInfo(pageNo,pageSize,adminRole);
+    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String admin){
+        String InvoiceInfo = this.accCommonInfoService.getInvoiceInfo(pageNo,pageSize,admin);
         return InvoiceInfo;
     }
 
@@ -51,8 +51,8 @@ public class AccCommonInfoController {
      * @description 发货
      * */
     @RequestMapping(value = "/ship")
-    public String ship(String idGroup, String admin, String adminRole){
-        String status = this.accCommonInfoService.ship(idGroup,admin,adminRole);
+    public String ship(String idGroup, String admin){
+        String status = this.accCommonInfoService.ship(idGroup,admin);
         return status;
     }
 }

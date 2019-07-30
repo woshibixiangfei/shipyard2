@@ -9,9 +9,17 @@ import java.util.List;
 
 public interface AdminService {
 
-    Admin selectByPrimaryKey(Admin admin);
+    Admin selectByPrimaryKey(Integer id);
 
     JSONObject login (Admin admin);
+
+    public List<String> getRole(String admin);
+
+    public String getRoleList(String admin,Integer pageNo,Integer pageSize);
+
+    public String addRole(Admin admin,String idGroup,String account);
+
+    public String updateRole(Admin admin,String idGroup,String account);
 
     public List getBankListByExcel(InputStream in, String fileName) throws Exception;
 

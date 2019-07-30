@@ -18,8 +18,8 @@ public class AccSeplenishmentController {
      * @description 获取补料信息
      * */
     @RequestMapping(value = "/getAccSeplenishmentInfo")
-    public String getAccSeplenishmentInfo(Integer pageNo, Integer pageSize, String adminRole){
-        String AccCommonInfo = this.accSeplenishmentService.getAccSeplenishmentInfo(pageNo,pageSize,adminRole);
+    public String getAccSeplenishmentInfo(Integer pageNo, Integer pageSize, String admin){
+        String AccCommonInfo = this.accSeplenishmentService.getAccSeplenishmentInfo(pageNo,pageSize,admin);
         return AccCommonInfo;
     }
 
@@ -29,8 +29,8 @@ public class AccSeplenishmentController {
      * @description 补料确认
      * */
     @RequestMapping(value = "/seplenishmentConfirm")
-    public String seplenishmentConfirm(String idGroup,String admin,String adminRole){
-        String AccCommonInfo = this.accSeplenishmentService.seplenishmentConfirm(idGroup,admin,adminRole);
+    public String seplenishmentConfirm(String idGroup,String admin){
+        String AccCommonInfo = this.accSeplenishmentService.seplenishmentConfirm(idGroup,admin);
         return AccCommonInfo;
     }
 

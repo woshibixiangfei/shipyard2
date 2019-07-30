@@ -16,13 +16,13 @@ public interface AccCommonInfoService {
     int updateByPrimaryKey(AccCommonInfo record);
 
     String getAccCommonInfo(String shipNumber,String segmentation,
-                            Integer pageNo,Integer pageSize,String adminRole);
+                            Integer pageNo,Integer pageSize,String admin);
 
-    String generateInvoice(String idGroup, String admin, String adminRole);
+    String generateInvoice(String idGroup, String admin);
 
-    public String getAccInecoming(Integer pageNo, Integer pageSize, String adminRole);
+    public String getAccInecoming(Integer pageNo, Integer pageSize, String admin);
 
-    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String adminRole);
+    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String admin);
 
-    public String ship(String idGroup, String admin, String adminRole);
+    public String ship(String idGroup, String admin);
 }
