@@ -141,9 +141,6 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
                     String jsonStr = json.toString();
                     return jsonStr;
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         }catch (Exception e){
             e.printStackTrace();

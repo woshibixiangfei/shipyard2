@@ -95,8 +95,11 @@ public class AdminController {
                     AccCommonInfo accCommonInfo = new AccCommonInfo();
                     String dateNow = new DateUtils().dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
                     Date nowDate = new DateUtils().stringtoDate(dateNow, "yyyy-MM-dd HH:mm:ss");
-                    for (int i = 1; i < list.size(); i++) {
+                    for (int i = 2; i < list.size(); i++) {
                         List<Object> lo = list.get(i);
+                        if(list.get(i).size() < 8){
+                            break;
+                        }
                         int number = new Double(list.get(i).get(8).toString()).intValue();
                         for (int j = 0; j < number; j++) {
                             accCommonInfo.setShipNumber(shipNumber);
@@ -123,7 +126,7 @@ public class AdminController {
                             }
                         }
                         //TODO 随意发挥
-                        System.out.println(lo);
+
 
                     }
                     boolean createSegmentationStatus = this.shipSegmentationService.createShipSegmentation(shipNumber, admin);
@@ -131,6 +134,7 @@ public class AdminController {
                         statusMap.put("status", "failed");
                         return statusMap;
                     }
+                    System.out.println("完成");
                     statusMap.put("status", "success");
                     return statusMap;
                 } else {

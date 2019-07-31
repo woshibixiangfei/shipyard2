@@ -271,7 +271,7 @@
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
-    AND t.workitem_status = 4
+    AND t.workitem_status in (3,4)
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
@@ -282,7 +282,7 @@
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
-    AND t.workitem_status = 4
+    AND t.workitem_status in (3,4)
   </select>
 
   <update id="underPlan" >

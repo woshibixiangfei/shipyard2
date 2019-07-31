@@ -108,7 +108,7 @@
     where
     t.delete_flag = 0
     AND t.`status` not in (0,1)
-    AND t.replenishment_status = 0
+    AND t.replenishment_status = (0,1)
     ORDER BY t.register_date desc
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
