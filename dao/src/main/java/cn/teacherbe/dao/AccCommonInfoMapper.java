@@ -34,6 +34,10 @@ public interface AccCommonInfoMapper {
 
     List<PairEntity> selectUnPair();
 
+    Integer getTotal();
+    Integer getDone();
+    Integer getUnDone();
+
     int updateById(@Param("updater")String updater,@Param("updateDate")String updateDate,@Param("idGroup")List<String> idGroup);
 
     int updateById2(@Param("updater")String updater,@Param("updateDate")String updateDate,@Param("idGroup")List<String> idGroup);

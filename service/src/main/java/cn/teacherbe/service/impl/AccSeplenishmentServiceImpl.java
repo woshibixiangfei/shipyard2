@@ -41,6 +41,9 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
                     List<AccSeplenishmentInfo> AccSeplenishmentList = this.accSeplenishmentMapper.selectAll(pageNo, pageSize);
                     JSONArray jsonObject = JSONArray.fromObject(AccSeplenishmentList);
                     Integer total = this.accSeplenishmentMapper.selectAllCount();
+                    Integer newTotal = this.accCommonInfoMapper.getTotal();
+                    Integer done = this.accCommonInfoMapper.getDone();
+                    Integer unDone = this.accCommonInfoMapper.getUnDone();
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -49,6 +52,9 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
                     data.put("totalPage", totalPage);
                     data.put("pageNo", current);
                     data.put("pageSize", AccSeplenishmentList.size());
+                    data.put("newTotal", newTotal);
+                    data.put("done", done);
+                    data.put("unDone", unDone);
                     JSONArray jsonArray = JSONArray.fromObject(jsonObject);
                     data.put("record", jsonArray);
                     json.put("data", data);

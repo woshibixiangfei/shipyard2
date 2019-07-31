@@ -30,6 +30,9 @@ public interface WorkitemRelationMapper {
 
     Integer selectPlanCount();
 
+    Integer getTotal();
+    Integer getDone();
+
     Integer selectAssemblyInfoCount(@Param("no")String admin);
 
     List<TaskInfo> selectTaskInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("no")String admin);

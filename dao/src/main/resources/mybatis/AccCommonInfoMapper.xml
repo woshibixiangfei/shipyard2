@@ -40,6 +40,15 @@
     length, type, number_parts, `group`, `status`, replenishment_status, register_date, update_date,
     creator, updater, delete_flag
   </sql>
+  <select id="getTotal" resultType="Integer">
+    SELECT COUNT(*) FROM t_acc_commoninfo WHERE status in (2,3) AND delete_flag = 0;
+  </select>
+  <select id="getDone" resultType="Integer">
+    SELECT COUNT(*) FROM t_acc_commoninfo WHERE status in (2,3) AND replenishment_status = 0 AND delete_flag = 0;
+  </select>
+  <select id="getUnDone" resultType="Integer">
+    SELECT COUNT(*) FROM t_acc_commoninfo WHERE status in (2,3) AND replenishment_status = 1 AND delete_flag = 0;
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -108,8 +117,8 @@
     where
     t.delete_flag = 0
     AND t.`status` not in (0,1)
-    AND t.replenishment_status = (0,1)
-    ORDER BY t.register_date desc
+    AND t.replenishment_status in (0,1)
+    ORDER BY t.replenishment_status,t.register_date desc
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 

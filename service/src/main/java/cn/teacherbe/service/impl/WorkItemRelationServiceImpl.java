@@ -11,6 +11,7 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -344,6 +345,8 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                 ) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
+                    Integer newTotal = this.workItemRealationMapper.getTotal();
+                    Integer done = this.workItemRealationMapper.getDone();
                     List<OutInfo> OutInfoList = this.workItemRealationMapper.selectOutInfo(pageNo, pageSize);
                     JSONArray jsonObject = JSONArray.fromObject(OutInfoList);
                     Integer total = this.workItemRealationMapper.selectOutInfoCount();
@@ -355,6 +358,12 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     data.put("totalPage", totalPage);
                     data.put("pageNo", current);
                     data.put("pageSize", OutInfoList.size());
+                    if(newTotal == 0) {
+                        data.put("percent", 0);
+                    } else {
+                        double f1 = new BigDecimal((float)done / newTotal).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                        data.put("percent", f1);
+                    }
                     JSONArray jsonArray = JSONArray.fromObject(jsonObject);
                     data.put("record", jsonArray);
                     json.put("data", data);

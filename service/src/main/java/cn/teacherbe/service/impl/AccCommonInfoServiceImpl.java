@@ -126,6 +126,9 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
                     pageNo = (pageNo - 1) * pageSize;
                     List<AccInecomingInfo> accInecomingInfoList = this.accCommonInfoMapper.selectAccInecomingInfo(pageNo, pageSize);
                     JSONArray jsonObject = JSONArray.fromObject(accInecomingInfoList);
+                    Integer newTotal = this.accCommonInfoMapper.getTotal();
+                    Integer done = this.accCommonInfoMapper.getDone();
+                    Integer unDone = this.accCommonInfoMapper.getUnDone();
                     Integer total = this.accCommonInfoMapper.selectAccInecomingInfoCount();
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
@@ -135,6 +138,9 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
                     data.put("totalPage", totalPage);
                     data.put("pageNo", current);
                     data.put("pageSize", accInecomingInfoList.size());
+                    data.put("newTotal", newTotal);
+                    data.put("done", done);
+                    data.put("unDone", unDone);
                     JSONArray jsonArray = JSONArray.fromObject(jsonObject);
                     data.put("record", jsonArray);
                     json.put("data", data);
