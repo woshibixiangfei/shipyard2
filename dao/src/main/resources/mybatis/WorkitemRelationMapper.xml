@@ -117,7 +117,7 @@
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status IN (0,1)
     AND t.execution_cross &lt;&gt; 'nothing'
-    AND t.execution_cross in (
+    AND (t.execution_cross in (
     SELECT
     CASE WHEN c.id=7 or c.id=8 or c.id=4 THEN 1 WHEN c.id=9 or c.id=10 or c.id=5 THEN 2 WHEN c.id=13 or c.id=14 or c.id=6 THEN 3 ELSE 0 END
     FROM t_role c where c.id in (
@@ -127,7 +127,15 @@
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+    ) or
+		'11' in (select c.id FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+	))
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
@@ -140,7 +148,7 @@
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status IN (0,1)
     AND t.execution_cross &lt;&gt; 'nothing'
-    AND t.execution_cross in (
+    AND (t.execution_cross in (
     SELECT
     CASE WHEN c.id=7 or c.id=8 or c.id=4 THEN 1 WHEN c.id=9 or c.id=10 or c.id=5 THEN 2 WHEN c.id=13 or c.id=14 or c.id=6 THEN 3 ELSE 0 END
     FROM t_role c where c.id in (
@@ -150,7 +158,15 @@
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+    ) or
+		'11' in (select c.id FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+	))
   </select>
 
   <select id="selectAssemblyInfo" resultMap="BaseResultMap2">
@@ -161,7 +177,7 @@
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status IN (0,1)
-    AND t.execution_cross in (
+    AND (t.execution_cross in (
     SELECT
     CASE WHEN c.id=7 or c.id=8 or c.id=4 THEN 1 WHEN c.id=9 or c.id=10 or c.id=5 THEN 2 WHEN c.id=13 or c.id=14 or c.id=6 THEN 3 ELSE 0 END
     FROM t_role c where c.id in (
@@ -171,8 +187,16 @@
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+    ) or
+		'11' in (select c.id FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
     )
-    AND t.executive_class in (
+	))
+    AND (t.executive_class in (
     SELECT
     c.id
     FROM t_role c where c.id in (
@@ -182,7 +206,15 @@
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+    ) or
+		'11' in (select c.id FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+	))
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
@@ -194,7 +226,7 @@
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status IN (0,1)
-    AND t.execution_cross in (
+    AND (t.execution_cross in (
     SELECT
     CASE WHEN c.id=7 or c.id=8 or c.id=4 THEN 1 WHEN c.id=9 or c.id=10 or c.id=5 THEN 2 WHEN c.id=13 or c.id=14 or c.id=6 THEN 3 ELSE 0 END
     FROM t_role c where c.id in (
@@ -204,8 +236,16 @@
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+    ) or
+		'11' in (select c.id FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
     )
-    AND t.executive_class in (
+	))
+    AND (t.executive_class in (
     SELECT
     c.id
     FROM t_role c where c.id in (
@@ -215,7 +255,15 @@
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+    ) or
+		'11' in (select c.id FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
     )
+	))
   </select>
 
   <select id="selectWeldingInfo" resultMap="BaseResultMap2">
