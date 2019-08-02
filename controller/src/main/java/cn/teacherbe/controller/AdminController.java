@@ -137,9 +137,6 @@ public class AdminController {
                     System.out.println("完成");
                     statusMap.put("status", "success");
                     return statusMap;
-                } else {
-                    statusMap.put("status", "failed");
-                    return statusMap;
                 }
             }
         }catch (Exception e){

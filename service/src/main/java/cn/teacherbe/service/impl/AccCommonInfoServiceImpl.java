@@ -94,10 +94,6 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
                     json.put("data", data);
                     String jsonStr = json.toString();
                     return jsonStr;
-                } else {
-                    JSONObject json = new JSONObject();
-                    json.put("status", "failed");
-                    return json.toString();
                 }
             }
         }catch (Exception e){
@@ -182,9 +178,6 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
                 }
                 return json.toString();
             }
-            JSONObject json = new JSONObject();
-            json.put("status", "failed");
-            return json.toString();
         }
         }catch (Exception e){
             e.printStackTrace();
@@ -227,9 +220,6 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
                     String jsonStr = json.toString();
                     return jsonStr;
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         }catch (Exception e){
             e.printStackTrace();

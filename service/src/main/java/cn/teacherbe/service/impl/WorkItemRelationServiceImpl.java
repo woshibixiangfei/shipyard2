@@ -50,9 +50,6 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     String jsonStr = json.toString();
                     return jsonStr;
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -82,9 +79,6 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     }
                     return json.toString();
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -127,9 +121,6 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     String jsonStr = json.toString();
                     return jsonStr;
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -163,9 +154,6 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     }
                     return json.toString();
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -207,9 +195,6 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     String jsonStr = json.toString();
                     return jsonStr;
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -370,9 +355,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     String jsonStr = json.toString();
                     return jsonStr;
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
+
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -415,9 +398,6 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     String jsonStr = json.toString();
                     return jsonStr;
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         }catch (Exception e){
             e.printStackTrace();
