@@ -4,7 +4,9 @@
   <resultMap id="BaseResultMap" type="cn.teacherbe.entity.ShipSegmentation">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="ship_id" jdbcType="INTEGER" property="shipId" />
+    <result column="number" jdbcType="INTEGER" property="number" />
     <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="creator" jdbcType="VARCHAR" property="creator" />
@@ -15,8 +17,13 @@
     <result column="ship_id" jdbcType="INTEGER" property="shipId" />
     <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
   </resultMap>
+  <resultMap id="BaseResultMap3" type="cn.teacherbe.entity.ShipSegmentation2">
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="number" jdbcType="VARCHAR" property="number" />
+  </resultMap>
   <sql id="Base_Column_List">
-    id, segmentation, ship_id, register_date, update_date, creator, updater, delete_flag
+    id, segmentation, status, ship_id, register_date, update_date, creator, updater, delete_flag
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -24,9 +31,14 @@
     from t_ship_segmentation
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <update id="updateFuckyou">
+    UPDATE t_ship_segmentation SET number = number - 2
+	where ship_id = (select id from t_ship_number where ship_number = #{shipNumber,jdbcType=VARCHAR})
+	and segmentation = #{segmentation,jdbcType=INTEGER};
+  </update>
 
-  <select id="selectAll"  resultType="String">
-    SELECT segmentation FROM t_ship_segmentation t1
+  <select id="selectAll"  resultMap="BaseResultMap3">
+    SELECT segmentation,status,number FROM t_ship_segmentation t1
     LEFT JOIN t_ship_number t2 ON t1.ship_id = t2.id
     WHERE t2.delete_flag = 0
     AND t1.delete_flag = 0
@@ -52,15 +64,16 @@
     GROUP BY t.segmentation;
   </select>
 
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_ship_segmentation
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="cn.teacherbe.entity.ShipSegmentation">
-    insert into t_ship_segmentation (id, segmentation, ship_id, 
+    insert into t_ship_segmentation (id, segmentation, status, ship_id,`number`,
       register_date, update_date, creator, 
       updater, delete_flag)
-    values (#{id,jdbcType=INTEGER}, #{segmentation,jdbcType=VARCHAR}, #{shipId,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{segmentation,jdbcType=VARCHAR},  #{status,jdbcType=INTEGER}, #{shipId,jdbcType=INTEGER}, #{number,jdbcType=INTEGER},
       #{registerDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, 
       #{updater,jdbcType=VARCHAR}, #{deleteFlag,jdbcType=INTEGER})
   </insert>
@@ -73,8 +86,14 @@
       <if test="segmentation != null">
         segmentation,
       </if>
+      <if test="status != null">
+        status,
+      </if>
       <if test="shipId != null">
         ship_id,
+      </if>
+      <if test="number != null">
+        `number`,
       </if>
       <if test="registerDate != null">
         register_date,
@@ -99,8 +118,14 @@
       <if test="segmentation != null">
         #{segmentation,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
       <if test="shipId != null">
         #{shipId,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
       </if>
       <if test="registerDate != null">
         #{registerDate,jdbcType=TIMESTAMP},
@@ -125,8 +150,14 @@
       <if test="segmentation != null">
         segmentation = #{segmentation,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
       <if test="shipId != null">
         ship_id = #{shipId,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        `number` = #{number,jdbcType=INTEGER},
       </if>
       <if test="registerDate != null">
         register_date = #{registerDate,jdbcType=TIMESTAMP},
@@ -149,7 +180,9 @@
   <update id="updateByPrimaryKey" parameterType="cn.teacherbe.entity.ShipSegmentation">
     update t_ship_segmentation
     set segmentation = #{segmentation,jdbcType=VARCHAR},
+    status = #{status,jdbcType=INTEGER},
       ship_id = #{shipId,jdbcType=INTEGER},
+      `number` = #{number,jdbcType=INTEGER},
       register_date = #{registerDate,jdbcType=TIMESTAMP},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
       creator = #{creator,jdbcType=VARCHAR},

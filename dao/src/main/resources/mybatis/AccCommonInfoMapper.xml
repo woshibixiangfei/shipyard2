@@ -70,6 +70,65 @@
     AND ship_number = #{shipNumber,jdbcType=VARCHAR}
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
+  <select id="selectAll2" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    <trim>
+      <if test="segmentation != null">
+        AND segmentation = #{segmentation,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    AND ship_number = #{shipNumber,jdbcType=VARCHAR}
+    AND update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll2Count" resultType="Integer">
+    select
+    count(*)
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    <trim>
+      <if test="segmentation != null">
+        AND segmentation = #{segmentation,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    AND ship_number = #{shipNumber,jdbcType=VARCHAR}
+    AND update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
+  </select>
+  <select id="selectAll2Day" resultType="Integer">
+    select
+    count(*)
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    <trim>
+      <if test="segmentation != null">
+        AND segmentation = #{segmentation,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    AND ship_number = #{shipNumber,jdbcType=VARCHAR}
+    AND to_days(update_date) = to_days(now())
+  </select>
+  <select id="selectAll2Month" resultType="Integer">
+    select
+    count(*)
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    <trim>
+      <if test="segmentation != null">
+        AND segmentation = #{segmentation,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    AND ship_number = #{shipNumber,jdbcType=VARCHAR}
+    AND DATE_FORMAT(update_date,'%Y%m') = DATE_FORMAT(CURDATE(),'%Y%m');
+  </select>
 
   <select id="selectAllCount" resultType="Integer">
     select
@@ -83,6 +142,15 @@
         AND segmentation = #{segmentation,jdbcType=VARCHAR}
       </if>
     </trim>
+    AND ship_number = #{shipNumber,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll3Count" resultType="Integer">
+    select
+    count(*)
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    AND segmentation = #{segmentation,jdbcType=VARCHAR}
     AND ship_number = #{shipNumber,jdbcType=VARCHAR}
   </select>
 

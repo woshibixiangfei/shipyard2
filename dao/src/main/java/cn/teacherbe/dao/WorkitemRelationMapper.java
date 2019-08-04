@@ -20,17 +20,26 @@ public interface WorkitemRelationMapper {
 
     List<WorkitemRelationPlan> selectPlan(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
+    List<FuckYou> selectFuckyou(@Param("id")Integer id);
+
     List<WorkitemRelationPlan> selectAssemblyInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("no")String admin);
 
     List<WorkitemRelationPlan> selectWeldingInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("no")String admin,@Param("type")Integer type);
 
     List<OutInfo> selectOutInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
+    Integer getWelding12345Day(@Param("type")Integer type);
+
+    Integer getWelding12345Month(@Param("type")Integer type);
+
     Integer selectOutInfoCount();
 
     Integer selectPlanCount();
 
+    Integer getWeldingAll();
+
     Integer getTotal();
+
     Integer getDone();
 
     Integer selectAssemblyInfoCount(@Param("no")String admin);

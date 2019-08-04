@@ -17,6 +17,8 @@ public class WorkitemRelationPlan {
 
     private String partNumber;
 
+    private String updateDate;
+
     //private String partNumber2;
 
     public Integer getId() {
@@ -91,5 +93,11 @@ public class WorkitemRelationPlan {
         this.partNumber2 = partNumber2;
     }*/
 
+    public String getUpdateDate() {
+        return updateDate;
+    }
 
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
+    }
 }

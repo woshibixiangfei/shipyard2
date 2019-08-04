@@ -20,7 +20,17 @@ public interface AccCommonInfoMapper {
     List<AccCommonInfo> selectAll(@Param("status")Integer status,@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation,
                                   @Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 
+    List<AccCommonInfo> selectAll2(@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation,
+                                  @Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("startDate") String startDate, @Param("endDate") String endDate);
+
     Integer selectAllCount(@Param("status")Integer status,@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation);
+
+    Integer selectAll3Count(@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation);
+
+    Integer selectAll2Count(@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation,@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    Integer selectAll2Day(@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation);
+    Integer selectAll2Month(@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation);
 
     List<AccCommonInfo> selectInvoiceInfo(@Param("status")Integer status,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
 

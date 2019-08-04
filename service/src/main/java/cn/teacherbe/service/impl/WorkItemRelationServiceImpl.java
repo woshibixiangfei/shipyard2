@@ -1,5 +1,7 @@
 package cn.teacherbe.service.impl;
 
+import cn.teacherbe.dao.AccCommonInfoMapper;
+import cn.teacherbe.dao.ShipSegmentationMapper;
 import cn.teacherbe.dao.WorkItemMapper;
 import cn.teacherbe.dao.WorkitemRelationMapper;
 import cn.teacherbe.entity.*;
@@ -24,6 +26,10 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     private WorkItemMapper workItemMapper;
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private AccCommonInfoMapper accCommonInfoMapper;
+    @Autowired
+    private ShipSegmentationMapper shipSegmentationMapper;
 
     @Override
     public String getPlan(Integer pageNo, Integer pageSize, String admin) {
@@ -248,12 +254,16 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                         JSONArray jsonObject = JSONArray.fromObject(WeldingInfoList);
                         Integer total = this.workItemRealationMapper.selectWeldingInfoCount(admin, type);
                         Integer totalPage = (total + pageSize - 1) / pageSize;
+                        Integer day = this.workItemRealationMapper.getWelding12345Day(type);
+                        Integer month = this.workItemRealationMapper.getWelding12345Month(type);
                         JSONObject json = new JSONObject();
                         json.put("status", "success");
                         JSONObject data = new JSONObject();
                         data.put("total", total);
                         data.put("totalPage", totalPage);
                         data.put("pageNo", current);
+                        data.put("day", day);
+                        data.put("month", month);
                         data.put("pageSize", WeldingInfoList.size());
                         JSONArray jsonArray = JSONArray.fromObject(jsonObject);
                         data.put("record", jsonArray);
@@ -281,13 +291,15 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
             List<String> roleList = this.adminService.getRole(admin);
             String typeName = null;
             if(type == 1){
-                typeName = "平面校直";
+                typeName = "平直校直";
             } else if(type == 2){
                 typeName = "线性校直";
             } else if(type == 3){
                 typeName = "焊接";
             } else if(type == 4){
                 typeName = "线性焊透";
+            } else if(type == 5){
+                typeName = "平直焊透";
             }
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList.get(t).equals("12")) {
@@ -384,6 +396,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     List<WorkItem> TaskList = this.workItemRealationMapper.getWeldingSelect(pageNo, pageSize);
                     JSONArray jsonObject = JSONArray.fromObject(TaskList);
                     Integer total = this.workItemRealationMapper.getWeldingSelectCount();
+                    Integer all = this.workItemRealationMapper.getWeldingAll();
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -392,6 +405,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     data.put("totalPage", totalPage);
                     data.put("pageNo", current);
                     data.put("pageSize", TaskList.size());
+                    data.put("all", all);
                     JSONArray jsonArray = JSONArray.fromObject(jsonObject);
                     data.put("record", jsonArray);
                     json.put("data", data);
@@ -419,6 +433,10 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                 if (roleList.get(t).equals("11") || roleList.get(t).equals("3")) {
                     List<String> result = Arrays.asList(idGroup.split(","));
                     this.workItemRealationMapper.out(result, carNumber,admin);
+                    for(int i=0; i<result.size(); i++){
+                        List<FuckYou> fuckYou = this.workItemRealationMapper.selectFuckyou(Integer.parseInt(result.get(i)));
+                        this.shipSegmentationMapper.updateFuckyou(fuckYou.get(0).getShipNumber(),fuckYou.get(0).getSegmentation());
+                    }
                     json.put("status", "success");
                     return json.toString();
                 }

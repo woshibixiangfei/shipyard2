@@ -7,7 +7,11 @@ public class ShipSegmentation {
 
     private String segmentation;
 
+    private Integer status;
+
     private Integer shipId;
+
+    private Integer number;
 
     private String registerDate;
 
@@ -81,5 +85,21 @@ public class ShipSegmentation {
 
     public void setDeleteFlag(Integer deleteFlag) {
         this.deleteFlag = deleteFlag;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 }

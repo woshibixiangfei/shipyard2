@@ -1,5 +1,6 @@
 package cn.teacherbe.controller;
 
+import cn.teacherbe.dao.AccCommonInfoMapper;
 import cn.teacherbe.entity.AccCommonInfo;
 import cn.teacherbe.entity.Admin;
 import cn.teacherbe.service.AccCommonInfoService;
@@ -32,6 +33,8 @@ public class AdminController {
     private ShipNumberService shipNumberService;
     @Autowired
     private AccCommonInfoService accCommonInfoService;
+    @Autowired
+    private AccCommonInfoMapper accCommonInfoMapper;
     @Autowired
     private ShipSegmentationService shipSegmentationService;
 
@@ -129,7 +132,8 @@ public class AdminController {
 
 
                     }
-                    boolean createSegmentationStatus = this.shipSegmentationService.createShipSegmentation(shipNumber, admin);
+                    //Integer size = this.accCommonInfoMapper.selectAll3Count(shipNumber,String.valueOf(new Double(list.get(2).get(2).toString()).intValue()));
+                    boolean createSegmentationStatus = this.shipSegmentationService.createShipSegmentation(shipNumber, admin,0);
                     if (createSegmentationStatus == false) {
                         statusMap.put("status", "failed");
                         return statusMap;

@@ -22,6 +22,7 @@
     <result column="batch" jdbcType="INTEGER" property="batch" />
     <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
     <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
   </resultMap>
   <resultMap id="BaseResultMap3" type="cn.teacherbe.entity.TaskInfo">
     <result column="id" jdbcType="INTEGER" property="id" />
@@ -50,6 +51,12 @@
     <result column="workitem_status" jdbcType="VARCHAR" property="workitemStatus" />
     <result column="executive_class" jdbcType="VARCHAR" property="executiveClass" />
     <result column="car_number" jdbcType="VARCHAR" property="carNumber" />
+  </resultMap>
+  <resultMap id="BaseResultMap6" type="cn.teacherbe.entity.FuckYou">
+    <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="id1" jdbcType="INTEGER" property="id1" />
+    <result column="id2" jdbcType="INTEGER" property="id2" />
   </resultMap>
   <sql id="Base_Column_List">
     id, one_common_id, two_common_id, execution_cross, executive_class, check_if, process, 
@@ -93,7 +100,15 @@
     AND t.execution_cross = 'nothing'
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
-
+  <select id="selectFuckyou" resultMap="BaseResultMap6">
+    SELECT t1.ship_number,t1.segmentation,t1.id as id1 ,t2.id as id2
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE (t.delete_flag = 0 or t.delete_flag is null)
+    AND t1.delete_flag = 0
+    id = #{id,jdbcType=INTEGER}
+  </select>
   <select id="selectPlanCount" resultType="Integer">
     SELECT count(*)
     FROM t_workitem_relation t
@@ -170,7 +185,7 @@
   </select>
 
   <select id="selectAssemblyInfo" resultMap="BaseResultMap2">
-    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,t.update_date
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
@@ -321,6 +336,45 @@
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t3.description is not null
     AND t.workitem_status in(2,3)
+  </select>
+  <select id="getWelding12345Day" resultType="Integer">
+    SELECT count(*)
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id AND t3.type = #{type,jdbcType=INTEGER}
+     WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status in (2,3)
+    AND t.check_if = 1
+    AND t3.now is not null
+    AND t.process &lt;&gt; 'nothing'
+    AND t.process like '%${type}%'
+    AND to_days(t3.update_date) = to_days(now());
+  </select>
+  <select id="getWelding12345Month" resultType="Integer">
+    SELECT count(*)
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id AND t3.type = #{type,jdbcType=INTEGER}
+     WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status in (2,3)
+    AND t.check_if = 1
+    AND t3.now is not null
+    AND t.process &lt;&gt; 'nothing'
+    AND t.process like '%${type}%'
+    AND DATE_FORMAT(t3.update_date,'%Y%m') = DATE_FORMAT(CURDATE(),'%Y%m');
+  </select>
+  <select id="getWeldingAll" resultType="Integer">
+    SELECT count(*)
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status  = 3
   </select>
   <select id="selectOutInfo" resultMap="BaseResultMap5">
     SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,t.workitem_status,t.car_number

@@ -71,16 +71,18 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
      * @description 获取物料信息
      * */
     @Override
-    public String getAccCommonInfo(String shipNumber, String segmentation, Integer pageNo, Integer pageSize, String admin) {
+    public String getAccCommonInfo(String shipNumber, String segmentation, Integer pageNo, Integer pageSize, String admin, String startDate, String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList.get(t).equals("11") || roleList.get(t).equals("1")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<AccCommonInfo> accCommonInfoList = this.accCommonInfoMapper.selectAll(0, shipNumber, segmentation, pageNo, pageSize);
+                    List<AccCommonInfo> accCommonInfoList = this.accCommonInfoMapper.selectAll2(shipNumber, segmentation, pageNo, pageSize, startDate, endDate);
                     JSONArray jsonObject = JSONArray.fromObject(accCommonInfoList);
-                    Integer total = this.accCommonInfoMapper.selectAllCount(0, shipNumber, segmentation);
+                    Integer total = this.accCommonInfoMapper.selectAll2Count(shipNumber, segmentation,startDate, endDate);
+                    Integer day = this.accCommonInfoMapper.selectAll2Day(shipNumber, segmentation);
+                    Integer month = this.accCommonInfoMapper.selectAll2Month(shipNumber, segmentation);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -88,6 +90,8 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
                     data.put("total", total);
                     data.put("totalPage", totalPage);
                     data.put("pageNo", current);
+                    data.put("day", day);
+                    data.put("month", month);
                     data.put("pageSize", accCommonInfoList.size());
                     JSONArray jsonArray = JSONArray.fromObject(jsonObject);
                     data.put("record", jsonArray);
