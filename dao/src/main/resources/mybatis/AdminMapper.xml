@@ -73,6 +73,15 @@
     delete from t_admin
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <delete id="deleteAll">
+    delete from t_acc_commoninfo;
+	delete from t_acc_seplenishment;
+	delete from t_ship_number;
+	delete from t_ship_segmentation;
+	delete from t_workitem;
+	delete from t_workitem_relation;
+  </delete>
+
   <insert id="insert">
     insert into t_admin (id, name, department, 
       post, no, password, 

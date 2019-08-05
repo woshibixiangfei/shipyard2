@@ -19,6 +19,8 @@ public interface AdminService {
 
     public String addRole(Admin admin,String idGroup,String account);
 
+    public String delete(String admin);
+
     public String updateRole(Admin admin,String idGroup,String account);
 
     public List getBankListByExcel(InputStream in, String fileName) throws Exception;

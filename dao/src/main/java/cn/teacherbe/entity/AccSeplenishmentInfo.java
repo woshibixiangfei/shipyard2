@@ -5,6 +5,8 @@ public class AccSeplenishmentInfo {
 
     private String shipNumber;
 
+    private String segmentation;
+
     private Integer batch;
 
     private String partNumber;
@@ -79,5 +81,13 @@ public class AccSeplenishmentInfo {
 
     public void setNumberPlate(String numberPlate) {
         this.numberPlate = numberPlate;
+    }
+
+    public String getSegmentation() {
+        return segmentation;
+    }
+
+    public void setSegmentation(String segmentation) {
+        this.segmentation = segmentation;
     }
 }

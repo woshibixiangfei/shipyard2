@@ -147,6 +147,29 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public String delete(String admin) {
+        try{
+            List<String> roleList = this.getRole(admin);
+            for(int i=0; i<roleList.size(); i++){
+                if(roleList.get(i).equals("11")){
+                    this.adminMapper.deleteAll();
+                    JSONObject json = new JSONObject();
+                    json.put("status", "success");
+                    return json.toString();
+                }
+            }
+            JSONObject json = new JSONObject();
+            json.put("status", "failed");
+            return json.toString();
+        }catch (Exception e){
+            e.printStackTrace();
+            JSONObject json = new JSONObject();
+            json.put("status", "failed");
+            return json.toString();
+        }
+    }
+
+    @Override
     public String updateRole(Admin admin, String idGroup, String account) {
         try{
             List<String> roleList = this.getRole(account);

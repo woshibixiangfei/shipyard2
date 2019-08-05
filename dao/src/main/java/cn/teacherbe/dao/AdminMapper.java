@@ -9,6 +9,8 @@ import java.util.List;
 public interface AdminMapper {
     int deleteByPrimaryKey(Integer id);
 
+    int deleteAll();
+
     int insert(@Param("name")String name,@Param("department")String department,
                @Param("post")String post,
                @Param("no")String no,

@@ -18,6 +18,7 @@
     <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
     <result column="batch" jdbcType="INTEGER" property="batch" />
     <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
     <result column="replenishment_status" jdbcType="INTEGER" property="replenishmentStatus" />
     <result column="arrival_status" jdbcType="INTEGER" property="arrivalStatus" />
     <result column="number_plate" jdbcType="VARCHAR" property="numberPlate" />
@@ -40,14 +41,15 @@
   <select id="selectAll" resultMap="BaseResultMap2">
     select a.* from
     (select
-    t.id,t2.ship_number,t2.batch,t2.part_number,t.replenishment_status,t.arrival_status,t.number_plate,t.update_date
+    t.id,t2.ship_number,t2.segmentation,t2.batch,t2.part_number,t.replenishment_status,t.arrival_status,t.number_plate,t.update_date
     from t_acc_seplenishment t
 		LEFT JOIN t_acc_commoninfo t2 ON t.common_id = t2.id
     where t.delete_flag = 0
     AND (t.replenishment_status = 1 OR t.arrival_status = 1)
-		) a
-	AND t.update_date BETWEEN
+    AND t.update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
+		) a
+
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   <select id="selectAllCount" resultType="Integer">
@@ -58,9 +60,10 @@
 		LEFT JOIN t_acc_commoninfo t2 ON t.common_id = t2.id
     where t.delete_flag = 0
     AND (t.replenishment_status = 1 OR t.arrival_status = 1)
-		) a
-	AND t.update_date BETWEEN
+    AND t.update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
+		) a
+
   </select>
   <select id="selectUnPair" resultMap="BaseResultMap3">
     SELECT t.common_id,t1.part_number

@@ -68,6 +68,12 @@ public class AdminController {
         return roleList;
     }
 
+    @RequestMapping(value = "/delete")
+    public String delete(String admin){
+        String roleList = this.adminService.delete(admin);
+        return roleList;
+    }
+
     @PostMapping(value = "/upload")
     @ResponseBody
     public JSONObject upload(HttpServletRequest request,String admin) throws Exception {
