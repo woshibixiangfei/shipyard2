@@ -98,6 +98,8 @@
     AND t2.`status` = 3
     AND t.workitem_status = 0
     AND t.execution_cross = 'nothing'
+    AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   <select id="selectFuckyou" resultMap="BaseResultMap6">
@@ -107,7 +109,7 @@
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
     WHERE (t.delete_flag = 0 or t.delete_flag is null)
     AND t1.delete_flag = 0
-    id = #{id,jdbcType=INTEGER}
+    AND t.id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectPlanCount" resultType="Integer">
     SELECT count(*)
@@ -121,6 +123,8 @@
     AND t2.`status` = 3
     AND t.workitem_status = 0
     AND t.execution_cross = 'nothing'
+    AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
 
   <select id="selectTaskInfo" resultMap="BaseResultMap3">
@@ -151,6 +155,8 @@
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
 	))
+	AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
@@ -182,6 +188,8 @@
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
 	))
+	AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
 
   <select id="selectAssemblyInfo" resultMap="BaseResultMap2">
@@ -231,6 +239,8 @@
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
 	))
+	AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
@@ -281,6 +291,8 @@
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
 	))
+	AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
 
   <select id="selectWeldingInfo" resultMap="BaseResultMap2">
@@ -296,6 +308,8 @@
     AND t3.now is null
     AND t.process &lt;&gt; 'nothing'
     AND t.process like '%${type}%'
+    AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
@@ -312,6 +326,8 @@
     AND t3.now is null
     AND t.process &lt;&gt; 'nothing'
     AND t.process like '%${type}%'
+    AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
 
   <select id="getWeldingSelect" resultMap="BaseResultMap4">
@@ -319,11 +335,13 @@
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
-		LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id
+	LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t3.description is not null
     AND t.workitem_status in(2,3)
+    AND t3.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
   <select id="getWeldingSelectCount" resultType="Integer">
@@ -331,11 +349,13 @@
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
-		LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id
+	LEFT JOIN t_workitem t3 ON t.id = t3.workItem_id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t3.description is not null
     AND t.workitem_status in(2,3)
+    AND t3.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
   <select id="getWelding12345Day" resultType="Integer">
     SELECT count(*)
@@ -384,6 +404,8 @@
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status in (3,4)
+    AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
@@ -395,6 +417,8 @@
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status in (3,4)
+    AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
 
   <update id="underPlan" >

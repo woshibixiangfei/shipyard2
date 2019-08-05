@@ -117,19 +117,19 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
      * @description 获取来料信息
      * */
     @Override
-    public String getAccInecoming(Integer pageNo, Integer pageSize, String admin) {
+    public String getAccInecoming(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList.get(t).equals("11") || roleList.get(t).equals("2")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<AccInecomingInfo> accInecomingInfoList = this.accCommonInfoMapper.selectAccInecomingInfo(pageNo, pageSize);
+                    List<AccInecomingInfo> accInecomingInfoList = this.accCommonInfoMapper.selectAccInecomingInfo(pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(accInecomingInfoList);
                     Integer newTotal = this.accCommonInfoMapper.getTotal();
                     Integer done = this.accCommonInfoMapper.getDone();
                     Integer unDone = this.accCommonInfoMapper.getUnDone();
-                    Integer total = this.accCommonInfoMapper.selectAccInecomingInfoCount();
+                    Integer total = this.accCommonInfoMapper.selectAccInecomingInfoCount(startDate,endDate);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -200,16 +200,16 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
      * @description 获取发货单信息
      * */
     @Override
-    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String admin) {
+    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList.get(t).equals("11") || roleList.get(t).equals("1")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<AccCommonInfo> InvoiceInfoList = this.accCommonInfoMapper.selectInvoiceInfo(1, pageNo, pageSize);
+                    List<AccCommonInfo> InvoiceInfoList = this.accCommonInfoMapper.selectInvoiceInfo(1, pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(InvoiceInfoList);
-                    Integer total = this.accCommonInfoMapper.selectInvoiceInfoCount(1);
+                    Integer total = this.accCommonInfoMapper.selectInvoiceInfoCount(1,startDate,endDate);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");

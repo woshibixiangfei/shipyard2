@@ -32,16 +32,16 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     private ShipSegmentationMapper shipSegmentationMapper;
 
     @Override
-    public String getPlan(Integer pageNo, Integer pageSize, String admin) {
+    public String getPlan(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList.get(t).equals("11")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<WorkitemRelationPlan> planList = this.workItemRealationMapper.selectPlan(pageNo, pageSize);
+                    List<WorkitemRelationPlan> planList = this.workItemRealationMapper.selectPlan(pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(planList);
-                    Integer total = this.workItemRealationMapper.selectPlanCount();
+                    Integer total = this.workItemRealationMapper.selectPlanCount(startDate,endDate);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -98,7 +98,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     }
 
     @Override
-    public String getTaskInfo(Integer pageNo, Integer pageSize, String admin) {
+    public String getTaskInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
@@ -110,9 +110,9 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                         || roleList.get(t).equals("14")){
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<TaskInfo> TaskList = this.workItemRealationMapper.selectTaskInfo(pageNo, pageSize, admin);
+                    List<TaskInfo> TaskList = this.workItemRealationMapper.selectTaskInfo(pageNo, pageSize, admin,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(TaskList);
-                    Integer total = this.workItemRealationMapper.selectTaskInfoCount(admin);
+                    Integer total = this.workItemRealationMapper.selectTaskInfoCount(admin,startDate,endDate);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -173,7 +173,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     }
 
     @Override
-    public String getAssemblyInfo(Integer pageNo, Integer pageSize, String admin) {
+    public String getAssemblyInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
@@ -184,9 +184,9 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                         || roleList.get(t).equals("14")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<WorkitemRelationPlan> AssemblyList = this.workItemRealationMapper.selectAssemblyInfo(pageNo, pageSize, admin);
+                    List<WorkitemRelationPlan> AssemblyList = this.workItemRealationMapper.selectAssemblyInfo(pageNo, pageSize, admin,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(AssemblyList);
-                    Integer total = this.workItemRealationMapper.selectAssemblyInfoCount(admin);
+                    Integer total = this.workItemRealationMapper.selectAssemblyInfoCount(admin,startDate,endDate);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -242,7 +242,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     }
 
     @Override
-    public String getWeldingInfo(Integer pageNo, Integer pageSize, String admin, Integer type) {
+    public String getWeldingInfo(Integer pageNo, Integer pageSize, String admin, Integer type,String startDate,String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
@@ -250,9 +250,9 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     if (StringUtil.notEmpty(type)) {
                         Integer current = pageNo;
                         pageNo = (pageNo - 1) * pageSize;
-                        List<WorkitemRelationPlan> WeldingInfoList = this.workItemRealationMapper.selectWeldingInfo(pageNo, pageSize, admin, type);
+                        List<WorkitemRelationPlan> WeldingInfoList = this.workItemRealationMapper.selectWeldingInfo(pageNo, pageSize, admin, type,startDate,endDate);
                         JSONArray jsonObject = JSONArray.fromObject(WeldingInfoList);
-                        Integer total = this.workItemRealationMapper.selectWeldingInfoCount(admin, type);
+                        Integer total = this.workItemRealationMapper.selectWeldingInfoCount(admin, type,startDate,endDate);
                         Integer totalPage = (total + pageSize - 1) / pageSize;
                         Integer day = this.workItemRealationMapper.getWelding12345Day(type);
                         Integer month = this.workItemRealationMapper.getWelding12345Month(type);
@@ -334,7 +334,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     }
 
     @Override
-    public String getOutInfo(Integer pageNo, Integer pageSize, String admin) {
+    public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
@@ -344,9 +344,9 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     pageNo = (pageNo - 1) * pageSize;
                     Integer newTotal = this.workItemRealationMapper.getTotal();
                     Integer done = this.workItemRealationMapper.getDone();
-                    List<OutInfo> OutInfoList = this.workItemRealationMapper.selectOutInfo(pageNo, pageSize);
+                    List<OutInfo> OutInfoList = this.workItemRealationMapper.selectOutInfo(pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(OutInfoList);
-                    Integer total = this.workItemRealationMapper.selectOutInfoCount();
+                    Integer total = this.workItemRealationMapper.selectOutInfoCount(startDate,endDate);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -381,7 +381,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     }
 
     @Override
-    public String getWeldingSelect(Integer pageNo, Integer pageSize, String admin) {
+    public String getWeldingSelect(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
@@ -393,9 +393,9 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                         || roleList.get(t).equals("14")){
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<WorkItem> TaskList = this.workItemRealationMapper.getWeldingSelect(pageNo, pageSize);
+                    List<WorkItem> TaskList = this.workItemRealationMapper.getWeldingSelect(pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(TaskList);
-                    Integer total = this.workItemRealationMapper.getWeldingSelectCount();
+                    Integer total = this.workItemRealationMapper.getWeldingSelectCount(startDate,endDate);
                     Integer all = this.workItemRealationMapper.getWeldingAll();
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();

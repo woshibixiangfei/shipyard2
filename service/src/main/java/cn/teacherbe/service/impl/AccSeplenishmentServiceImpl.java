@@ -31,16 +31,16 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
     @Autowired
     private cn.teacherbe.service.AdminService adminService;
     @Override
-    public String getAccSeplenishmentInfo(Integer pageNo, Integer pageSize, String admin) {
+    public String getAccSeplenishmentInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
         try {
             Integer current = pageNo;
             pageNo = (pageNo - 1) * pageSize;
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList.get(t).equals("11") || roleList.get(t).equals("2") || roleList.get(t).equals("1")) {
-                    List<AccSeplenishmentInfo> AccSeplenishmentList = this.accSeplenishmentMapper.selectAll(pageNo, pageSize);
+                    List<AccSeplenishmentInfo> AccSeplenishmentList = this.accSeplenishmentMapper.selectAll(pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(AccSeplenishmentList);
-                    Integer total = this.accSeplenishmentMapper.selectAllCount();
+                    Integer total = this.accSeplenishmentMapper.selectAllCount(startDate,endDate);
                     Integer newTotal = this.accCommonInfoMapper.getTotal();
                     Integer done = this.accCommonInfoMapper.getDone();
                     Integer unDone = this.accCommonInfoMapper.getUnDone();

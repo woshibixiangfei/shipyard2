@@ -40,8 +40,8 @@ public class AccCommonInfoController {
      * @description 获取发货单信息
      * */
     @RequestMapping(value = "/getInvoiceInfo")
-    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String admin){
-        String InvoiceInfo = this.accCommonInfoService.getInvoiceInfo(pageNo,pageSize,admin);
+    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate){
+        String InvoiceInfo = this.accCommonInfoService.getInvoiceInfo(pageNo,pageSize,admin,startDate,endDate);
         return InvoiceInfo;
     }
 

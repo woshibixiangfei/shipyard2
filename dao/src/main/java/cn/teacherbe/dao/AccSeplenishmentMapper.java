@@ -17,9 +17,9 @@ public interface AccSeplenishmentMapper {
 
     AccSeplenishment selectByPrimaryKey(Integer id);
 
-    List<AccSeplenishmentInfo> selectAll(@Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize);
+    List<AccSeplenishmentInfo> selectAll(@Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-    Integer selectAllCount();
+    Integer selectAllCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     int seplenishmentConfirm1(@Param("idGroup")List<SeplenishmentConfirm1> idGroup,@Param("updater")String admin);
 

@@ -20,9 +20,9 @@ public interface AccCommonInfoService {
 
     String generateInvoice(String idGroup, String admin);
 
-    public String getAccInecoming(Integer pageNo, Integer pageSize, String admin);
+    public String getAccInecoming(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate);
 
-    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String admin);
+    public String getInvoiceInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate);
 
     public String ship(String idGroup, String admin);
 }

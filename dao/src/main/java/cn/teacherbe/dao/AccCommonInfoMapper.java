@@ -32,15 +32,15 @@ public interface AccCommonInfoMapper {
     Integer selectAll2Day(@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation);
     Integer selectAll2Month(@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation);
 
-    List<AccCommonInfo> selectInvoiceInfo(@Param("status")Integer status,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+    List<AccCommonInfo> selectInvoiceInfo(@Param("status")Integer status,@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-    Integer selectInvoiceInfoCount(@Param("status")Integer status);
+    Integer selectInvoiceInfoCount(@Param("status")Integer status,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     List<AccCommonInfo> selectPair();
 
-    List<AccInecomingInfo> selectAccInecomingInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+    List<AccInecomingInfo> selectAccInecomingInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-    Integer selectAccInecomingInfoCount();
+    Integer selectAccInecomingInfoCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     List<PairEntity> selectUnPair();
 

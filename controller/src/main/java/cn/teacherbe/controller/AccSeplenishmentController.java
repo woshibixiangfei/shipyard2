@@ -18,8 +18,8 @@ public class AccSeplenishmentController {
      * @description 获取补料信息
      * */
     @RequestMapping(value = "/getAccSeplenishmentInfo")
-    public String getAccSeplenishmentInfo(Integer pageNo, Integer pageSize, String admin){
-        String AccCommonInfo = this.accSeplenishmentService.getAccSeplenishmentInfo(pageNo,pageSize,admin);
+    public String getAccSeplenishmentInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate){
+        String AccCommonInfo = this.accSeplenishmentService.getAccSeplenishmentInfo(pageNo,pageSize,admin,startDate,endDate);
         return AccCommonInfo;
     }
 

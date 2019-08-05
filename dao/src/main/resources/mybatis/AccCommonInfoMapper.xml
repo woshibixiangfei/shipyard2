@@ -162,6 +162,8 @@
     delete_flag = 0
     AND `status` = #{status,jdbcType=INTEGER}
     AND replenishment_status = 0
+    AND update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     ORDER BY ship_number,segmentation
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
@@ -174,6 +176,8 @@
     delete_flag = 0
     AND `status` = #{status,jdbcType=INTEGER}
     AND replenishment_status = 0
+    AND update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     ORDER BY ship_number,segmentation
   </select>
 
@@ -186,6 +190,8 @@
     t.delete_flag = 0
     AND t.`status` not in (0,1)
     AND t.replenishment_status in (0,1)
+    AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     ORDER BY t.replenishment_status,t.register_date desc
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
@@ -199,6 +205,8 @@
     t.delete_flag = 0
     AND t.`status` not in (0,1)
     AND t.replenishment_status = 0
+    AND t.update_date BETWEEN
+    date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     ORDER BY t.register_date desc
   </select>
 

@@ -24,8 +24,8 @@ public class WorkItemPlanController {
      * @description 获取下计划列表
      * */
     @RequestMapping(value = "/getPlan")
-    public String getPlan(Integer pageNo, Integer pageSize, String admin){
-        String plan = this.workItemRelationService.getPlan(pageNo,pageSize,admin);
+    public String getPlan(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate){
+        String plan = this.workItemRelationService.getPlan(pageNo,pageSize,admin,startDate,endDate);
         return plan;
     }
 
@@ -46,8 +46,8 @@ public class WorkItemPlanController {
      * @description 获取任务列表
      * */
     @RequestMapping(value = "/getTaskInfo")
-    public String getTaskInfo(Integer pageNo, Integer pageSize, String admin){
-        String TaskInfo = this.workItemRelationService.getTaskInfo(pageNo,pageSize,admin);
+    public String getTaskInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate){
+        String TaskInfo = this.workItemRelationService.getTaskInfo(pageNo,pageSize,admin,startDate,endDate);
         return TaskInfo;
     }
 
@@ -68,8 +68,8 @@ public class WorkItemPlanController {
      * @description 装配列表
      * */
     @RequestMapping(value = "/getAssemblyInfo")
-    public String getAssemblyInfo(Integer pageNo, Integer pageSize, String admin){
-        String claim = this.workItemRelationService.getAssemblyInfo(pageNo,pageSize,admin);
+    public String getAssemblyInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate){
+        String claim = this.workItemRelationService.getAssemblyInfo(pageNo,pageSize,admin,startDate,endDate);
         return claim;
     }
 
@@ -90,8 +90,8 @@ public class WorkItemPlanController {
      * @description 获取焊接列表
      * */
     @RequestMapping(value = "/getWeldingInfo")
-    public String getWeldingInfo(Integer pageNo, Integer pageSize, String admin,Integer type){
-        String getWeldingInfo = this.workItemRelationService.getWeldingInfo(pageNo,pageSize,admin,type);
+    public String getWeldingInfo(Integer pageNo, Integer pageSize, String admin,Integer type,String startDate,String endDate){
+        String getWeldingInfo = this.workItemRelationService.getWeldingInfo(pageNo,pageSize,admin,type,startDate,endDate);
         return getWeldingInfo;
     }
 
@@ -112,8 +112,8 @@ public class WorkItemPlanController {
      * @description 焊接统计
      * */
     @RequestMapping(value = "/getWeldingSelect")
-    public String getWeldingSelect(Integer pageNo, Integer pageSize, String admin){
-        String welding = this.workItemRelationService.getWeldingSelect(pageNo,pageSize,admin);
+    public String getWeldingSelect(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate){
+        String welding = this.workItemRelationService.getWeldingSelect(pageNo,pageSize,admin,startDate,endDate);
         return welding;
     }
 
@@ -123,8 +123,8 @@ public class WorkItemPlanController {
      * @description 获取出库列表
      * */
     @RequestMapping(value = "/getOutInfo")
-    public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String adminRole){
-        String getOutInfo = this.workItemRelationService.getOutInfo(pageNo,pageSize,admin);
+    public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String adminRole,String startDate,String endDate){
+        String getOutInfo = this.workItemRelationService.getOutInfo(pageNo,pageSize,admin,startDate,endDate);
         return getOutInfo;
     }
 
