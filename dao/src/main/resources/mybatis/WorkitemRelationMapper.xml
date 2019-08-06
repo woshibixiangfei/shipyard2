@@ -201,6 +201,7 @@
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status IN (0,1)
     AND t.execution_cross &lt;&gt; 'nothing'
+    AND t.executive_class &lt;&gt; 'nothing'
     AND (t.execution_cross in (
     SELECT
     CASE WHEN c.id=7 or c.id=8 or c.id=4 THEN 1 WHEN c.id=9 or c.id=10 or c.id=5 THEN 2 WHEN c.id=13 or c.id=14 or c.id=6 THEN 3 ELSE 0 END
@@ -339,7 +340,7 @@
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t3.description is not null
-    AND t.workitem_status in(2,3)
+    AND t.workitem_status in(2,3,4)
     AND t3.update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
@@ -353,7 +354,7 @@
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t3.description is not null
-    AND t.workitem_status in(2,3)
+    AND t.workitem_status in(2,3,4)
     AND t3.update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
