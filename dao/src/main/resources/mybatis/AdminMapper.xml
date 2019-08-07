@@ -81,6 +81,12 @@
 	delete from t_workitem;
 	delete from t_workitem_relation;
   </delete>
+  <delete id="deleteAdmin">
+    delete from t_admin
+    where id = #{id,jdbcType=INTEGER};
+    delete from t_admin_role
+    where admin_id = #{id,jdbcType=INTEGER};
+  </delete>
 
   <insert id="insert">
     insert into t_admin (id, name, department, 

@@ -11,6 +11,8 @@ public interface AdminMapper {
 
     int deleteAll();
 
+    int deleteAdmin(@Param("id")Integer id);
+
     int insert(@Param("name")String name,@Param("department")String department,
                @Param("post")String post,
                @Param("no")String no,

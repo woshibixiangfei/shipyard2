@@ -11,6 +11,8 @@ public interface AdminService {
 
     Admin selectByPrimaryKey(Integer id);
 
+    public String deleteAdmin(Integer adminId,String admin);
+
     JSONObject login (Admin admin);
 
     public List<String> getRole(String admin);

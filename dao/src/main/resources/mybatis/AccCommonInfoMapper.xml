@@ -181,6 +181,29 @@
     ORDER BY ship_number,segmentation
   </select>
 
+  <select id="selectLajiInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    AND `status` = 2
+    AND replenishment_status = 0
+    ORDER BY ship_number,segmentation
+    LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectLajiInfoCount" resultType="Integer">
+    select
+    count(*)
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    AND `status` = 2
+    AND replenishment_status = 0
+    ORDER BY ship_number,segmentation
+  </select>
+
   <select id="selectAccInecomingInfo" resultMap="BaseResultMap2">
     select
     t.ship_number,t.batch,t.segmentation,t.part_number,t.number_parts,t.register_date,t.replenishment_status,t1.number_plate

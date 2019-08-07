@@ -26,6 +26,17 @@ public class AccSeplenishmentController {
     /*
      * @author 毕翔斐
      * @version 1.0
+     * @description 获取未配对已发货信息
+     * */
+    @RequestMapping(value = "/getLajiInfo")
+    public String getLajiInfo(Integer pageNo, Integer pageSize, String admin){
+        String AccCommonInfo = this.accSeplenishmentService.getLajiInfo(pageNo,pageSize,admin);
+        return AccCommonInfo;
+    }
+
+    /*
+     * @author 毕翔斐
+     * @version 1.0
      * @description 补料确认
      * */
     @RequestMapping(value = "/seplenishmentConfirm")

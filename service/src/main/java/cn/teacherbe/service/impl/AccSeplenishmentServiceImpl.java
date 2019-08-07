@@ -187,4 +187,44 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
         json.put("status","failed");
         return json.toString();
     }
+
+    @Override
+    public String getLajiInfo(Integer pageNo, Integer pageSize, String admin) {
+        try {
+            Integer current = pageNo;
+            pageNo = (pageNo - 1) * pageSize;
+            List<String> roleList = this.adminService.getRole(admin);
+            for (int t = 0; t < roleList.size(); t++) {
+                if (roleList.get(t).equals("11") || roleList.get(t).equals("2") || roleList.get(t).equals("1")) {
+                    List<AccCommonInfo> AccInecomingInfoList = this.accCommonInfoMapper.selectLajiInfo(pageNo, pageSize);
+                    JSONArray jsonObject = JSONArray.fromObject(AccInecomingInfoList);
+                    Integer total = this.accCommonInfoMapper.selectLajiInfoCount();
+                    Integer totalPage = (total + pageSize - 1) / pageSize;
+                    JSONObject json = new JSONObject();
+                    json.put("status", "success");
+                    JSONObject data = new JSONObject();
+                    data.put("total", total);
+                    data.put("totalPage", totalPage);
+                    data.put("pageNo", current);
+                    data.put("pageSize", AccInecomingInfoList.size());
+                    JSONArray jsonArray = JSONArray.fromObject(jsonObject);
+                    data.put("record", jsonArray);
+                    json.put("data", data);
+                    String jsonStr = json.toString();
+                    return jsonStr;
+                }
+                JSONObject json = new JSONObject();
+                json.put("status", "failed");
+                return json.toString();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            JSONObject json = new JSONObject();
+            json.put("status", "failed");
+            return json.toString();
+        }
+        JSONObject json = new JSONObject();
+        json.put("status", "failed");
+        return json.toString();
+    }
 }

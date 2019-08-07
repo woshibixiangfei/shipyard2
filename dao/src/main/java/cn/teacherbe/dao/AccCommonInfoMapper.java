@@ -36,6 +36,10 @@ public interface AccCommonInfoMapper {
 
     Integer selectInvoiceInfoCount(@Param("status")Integer status,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
+    List<AccCommonInfo> selectLajiInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize);
+
+    Integer selectLajiInfoCount();
+
     List<AccCommonInfo> selectPair();
 
     List<AccInecomingInfo> selectAccInecomingInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("startDate") String startDate, @Param("endDate") String endDate);
