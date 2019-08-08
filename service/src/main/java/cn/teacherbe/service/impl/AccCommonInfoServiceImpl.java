@@ -332,6 +332,8 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
                             }
                         }
                     }
+                    json.put("status","success");
+                    return json.toString();
                 }
             }
         } catch (Exception e){

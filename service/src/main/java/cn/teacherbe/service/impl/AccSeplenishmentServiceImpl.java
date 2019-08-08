@@ -12,9 +12,7 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service("accSeplenishmentService")
 public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
@@ -89,12 +87,18 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList.get(t).equals("1")) {
                     List<SeplenishmentConfirm1> SeplenishmentConfirm1 = com.alibaba.fastjson.JSONArray.parseArray(idGroup, SeplenishmentConfirm1.class);
+                    if(SeplenishmentConfirm1.get(0).getReplenishmentStatus() == null){
+                        continue;
+                    }
                     this.accSeplenishmentMapper.seplenishmentConfirm1(SeplenishmentConfirm1, admin);
                     json.put("status", "success");
                     return json.toString();
                 } else if (roleList.get(t).equals("2")) {
                     List<SeplenishmentConfirm2> SeplenishmentConfirm2 = com.alibaba.fastjson.JSONArray.parseArray(idGroup, SeplenishmentConfirm2.class);
                     //List<String> result = Arrays.asList(idGroup.split(","));
+                    if(SeplenishmentConfirm2.get(0).getArrivalStatus() == null){
+                        continue;
+                    }
                     this.accSeplenishmentMapper.seplenishmentConfirm2(SeplenishmentConfirm2, admin);
                     this.accCommonInfoMapper.updateReplenishment(SeplenishmentConfirm2, admin);
                     List<PairEntity> unPairList1 = this.accSeplenishmentMapper.selectUnPair(SeplenishmentConfirm2);
@@ -218,6 +222,43 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
                 return json.toString();
             }
         } catch (Exception e){
+            e.printStackTrace();
+            JSONObject json = new JSONObject();
+            json.put("status", "failed");
+            return json.toString();
+        }
+        JSONObject json = new JSONObject();
+        json.put("status", "failed");
+        return json.toString();
+    }
+
+    @Override
+    public String laji(String idGroup, String admin) {
+        try{
+            List<String> roleList = this.adminService.getRole(admin);
+            for (int t = 0; t < roleList.size(); t++) {
+                if (roleList.get(t).equals("11") || roleList.get(t).equals("2")) {
+                    List<String> result = Arrays.asList(idGroup.split(","));
+                    List<Text> text = new ArrayList<Text>();
+                    for(int i=0; i<result.size(); i++){
+                        Text text1 = new Text();
+                        text1.setId(Integer.parseInt(result.get(i)));
+                        text.add(text1);
+                    }
+                    JSONObject json = new JSONObject();
+                    String dateNow = new DateUtils().dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
+                    int status = this.accCommonInfoMapper.laji(text,admin);
+                    this.accCommonInfoMapper.sb(admin,dateNow,result);
+                    List<String> caonima = this.accCommonInfoMapper.selectCaonimaInfo();
+                    this.accSeplenishmentMapper.insertInit(caonima, admin, dateNow, admin, dateNow);
+                    this.accCommonInfoMapper.updateById2(admin,dateNow,caonima);
+
+                    json.put("status", "success");
+                    //statusMap.put("info","账号密码不能为空！");
+                    return json.toString();
+                }
+            }
+        }catch (Exception e){
             e.printStackTrace();
             JSONObject json = new JSONObject();
             json.put("status", "failed");

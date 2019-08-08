@@ -183,14 +183,33 @@
 
   <select id="selectLajiInfo" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
+    id, ship_number, serial_number, batch, segmentation,
+	CASE WHEN RIGHT(part_number,1)='W' THEN INSERT(part_number,LENGTH(part_number),1,'F')
+	WHEN RIGHT(part_number,1)='F' THEN INSERT(part_number,LENGTH(part_number),1,'W') END AS part_number,
+	thickness, width,
+    length, type, number_parts, `group`, `status`, replenishment_status, register_date, update_date,
+    creator, updater, delete_flag
     from t_acc_commoninfo
     where
     delete_flag = 0
     AND `status` = 2
     AND replenishment_status = 0
+    AND (laji != 1 or laji is null)
     ORDER BY ship_number,segmentation
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectCaonimaInfo" resultType="String">
+    select
+    t.id
+    from t_acc_commoninfo t
+	LEFT JOIN t_acc_seplenishment t2 ON t.id = t2.common_id
+    where
+    t.delete_flag = 0
+    AND t.`status` = 2
+    AND t.replenishment_status = 1
+		and t2.id is null
+    AND t.laji = 1;
   </select>
 
   <select id="selectLajiInfoCount" resultType="Integer">
@@ -201,8 +220,10 @@
     delete_flag = 0
     AND `status` = 2
     AND replenishment_status = 0
+    AND (laji != 1 or laji is null)
     ORDER BY ship_number,segmentation
   </select>
+
 
   <select id="selectAccInecomingInfo" resultMap="BaseResultMap2">
     select
@@ -251,6 +272,43 @@
     AND `status` = 2
   </select>
 
+  <insert id="laji" parameterType="cn.teacherbe.entity.AccCommonInfo">
+    insert into t_acc_commoninfo (id, ship_number, serial_number,
+      batch, segmentation, part_number,
+      thickness, width, length,
+      type, number_parts, `group`,
+      `status`, replenishment_status,laji, register_date,
+      update_date, creator, updater,
+      delete_flag)
+    select
+    null, ship_number, serial_number, batch, segmentation,
+	CASE WHEN RIGHT(part_number,1)='W' THEN INSERT(part_number,LENGTH(part_number),1,'F')
+	WHEN RIGHT(part_number,1)='F' THEN INSERT(part_number,LENGTH(part_number),1,'W') END AS part_number,
+	thickness, width,
+    length, type, number_parts, `group`, 2, 1,1, SYSDATE(), SYSDATE(),
+    #{updater,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, delete_flag
+    from t_acc_commoninfo
+    where
+    delete_flag = 0
+    AND `status` = 2
+    AND replenishment_status = 0
+    AND ID IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </insert>
+
+  <update id="sb">
+    UPDATE t_acc_commoninfo SET laji = 1,updater = #{updater,jdbcType=VARCHAR},
+    update_date = #{updateDate,jdbcType=TIMESTAMP}
+    WHERE
+    delete_flag = 0
+    AND ID IN
+    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
   <update id="updateById" >
     UPDATE t_acc_commoninfo SET status = 1,updater = #{updater,jdbcType=VARCHAR},
     update_date = #{updateDate,jdbcType=TIMESTAMP}
@@ -287,6 +345,7 @@
     UPDATE t_acc_commoninfo t
     LEFT JOIN t_acc_seplenishment t1 ON t.id = t1.common_id
     SET t.replenishment_status = 0,
+    t.laji = 0,
     t.updater = #{updater,jdbcType=VARCHAR},
     t.update_date = SYSDATE()
     WHERE t1.arrival_status = 0

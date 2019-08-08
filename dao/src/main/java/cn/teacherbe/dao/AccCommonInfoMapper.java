@@ -1,9 +1,6 @@
 package cn.teacherbe.dao;
 
-import cn.teacherbe.entity.AccCommonInfo;
-import cn.teacherbe.entity.AccInecomingInfo;
-import cn.teacherbe.entity.PairEntity;
-import cn.teacherbe.entity.SeplenishmentConfirm2;
+import cn.teacherbe.entity.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -44,6 +41,8 @@ public interface AccCommonInfoMapper {
 
     List<AccInecomingInfo> selectAccInecomingInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
+    List<String> selectCaonimaInfo();
+
     Integer selectAccInecomingInfoCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     List<PairEntity> selectUnPair();
@@ -51,6 +50,8 @@ public interface AccCommonInfoMapper {
     Integer getTotal();
     Integer getDone();
     Integer getUnDone();
+
+    int sb(@Param("updater")String updater,@Param("updateDate")String updateDate,@Param("idGroup")List<String> idGroup);
 
     int updateById(@Param("updater")String updater,@Param("updateDate")String updateDate,@Param("idGroup")List<String> idGroup);
 
@@ -61,6 +62,8 @@ public interface AccCommonInfoMapper {
     int updateById4(@Param("commonId")Integer commonId,@Param("commonId2")Integer commonId2);
 
     int updateReplenishment(@Param("idGroup")List<SeplenishmentConfirm2> idGroup, @Param("updater")String admin);
+
+    int laji(@Param("idGroup")List<Text> idGroup, @Param("updater")String updater);
 
     int updateByPrimaryKeySelective(AccCommonInfo record);
 

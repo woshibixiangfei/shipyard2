@@ -7,4 +7,6 @@ public interface AccSeplenishmentService {
     public String seplenishmentConfirm(String idGroup,String admin);
 
     public String getLajiInfo(Integer pageNo, Integer pageSize, String admin);
+
+    public String laji(String idGroup, String admin);
 }
