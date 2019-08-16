@@ -98,7 +98,7 @@ public class AdminServiceImpl implements AdminService {
         try{
         List<String> roleList = this.getRole(admin);
         for(int i=0; i<roleList.size(); i++){
-            if(roleList.get(i).equals("11")){
+            if(roleList.get(i).equals("0")){
                 Integer current = pageNo;
                 pageNo = (pageNo - 1) * pageSize;
                 List<RoleList> RoleList = this.adminMapper.selectRoleList(pageNo,pageSize);
@@ -135,7 +135,7 @@ public class AdminServiceImpl implements AdminService {
         try{
             List<String> roleList = this.getRole(account);
             for(int i=0; i<roleList.size(); i++){
-                if(roleList.get(i).equals("11")){
+                if(roleList.get(i).equals("0")){
                     if(admin != null){
                         List<String> result = Arrays.asList(idGroup.split(","));
 
@@ -174,7 +174,7 @@ public class AdminServiceImpl implements AdminService {
         try{
             List<String> roleList = this.getRole(admin);
             for(int i=0; i<roleList.size(); i++){
-                if(roleList.get(i).equals("11")){
+                if(roleList.get(i).equals("0")){
                     this.adminMapper.deleteAll();
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -197,7 +197,7 @@ public class AdminServiceImpl implements AdminService {
         try{
             List<String> roleList = this.getRole(account);
             for(int i=0; i<roleList.size(); i++){
-                if(roleList.get(i).equals("11")){
+                if(roleList.get(i).equals("0")){
                     if(admin != null){
                         List<String> result = Arrays.asList(idGroup.split(","));
                         Admin adminNow = this.adminMapper.selectByPrimaryKey(admin.getId());

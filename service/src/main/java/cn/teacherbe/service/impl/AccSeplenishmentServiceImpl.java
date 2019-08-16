@@ -35,7 +35,7 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
             pageNo = (pageNo - 1) * pageSize;
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("2") || roleList.get(t).equals("1")) {
+                if (roleList.get(t).equals("4")) {
                     List<AccSeplenishmentInfo> AccSeplenishmentList = this.accSeplenishmentMapper.selectAll(pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(AccSeplenishmentList);
                     Integer total = this.accSeplenishmentMapper.selectAllCount(startDate,endDate);
@@ -85,7 +85,7 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
         try {
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("1")) {
+                if (roleList.get(t).equals("2")) {
                     List<SeplenishmentConfirm1> SeplenishmentConfirm1 = com.alibaba.fastjson.JSONArray.parseArray(idGroup, SeplenishmentConfirm1.class);
                     if(SeplenishmentConfirm1.get(0).getReplenishmentStatus() == null){
                         continue;
@@ -93,7 +93,7 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
                     this.accSeplenishmentMapper.seplenishmentConfirm1(SeplenishmentConfirm1, admin);
                     json.put("status", "success");
                     return json.toString();
-                } else if (roleList.get(t).equals("2")) {
+                } else if (roleList.get(t).equals("3")) {
                     List<SeplenishmentConfirm2> SeplenishmentConfirm2 = com.alibaba.fastjson.JSONArray.parseArray(idGroup, SeplenishmentConfirm2.class);
                     //List<String> result = Arrays.asList(idGroup.split(","));
                     if(SeplenishmentConfirm2.get(0).getArrivalStatus() == null){
@@ -199,7 +199,7 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
             pageNo = (pageNo - 1) * pageSize;
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("2") || roleList.get(t).equals("1")) {
+                if (roleList.get(t).equals("2") || roleList.get(t).equals("3")) {
                     List<AccCommonInfo> AccInecomingInfoList = this.accCommonInfoMapper.selectLajiInfo(pageNo, pageSize);
                     JSONArray jsonObject = JSONArray.fromObject(AccInecomingInfoList);
                     Integer total = this.accCommonInfoMapper.selectLajiInfoCount();
@@ -237,7 +237,7 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("2")) {
+                if (roleList.get(t).equals("3")) {
                     List<String> result = Arrays.asList(idGroup.split(","));
                     List<Text> text = new ArrayList<Text>();
                     for(int i=0; i<result.size(); i++){

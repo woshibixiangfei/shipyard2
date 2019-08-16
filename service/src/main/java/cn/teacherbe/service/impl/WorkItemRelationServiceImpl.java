@@ -36,7 +36,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11")) {
+                if (roleList.get(t).equals("5")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
                     List<WorkitemRelationPlan> planList = this.workItemRealationMapper.selectPlan(pageNo, pageSize,startDate,endDate);
@@ -73,7 +73,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11")) {
+                if (roleList.get(t).equals("5")) {
                     JSONObject json = new JSONObject();
                     List<String> result = Arrays.asList(idGroup.split(","));
                     int status = this.workItemRealationMapper.underPlan(admin, result, kua);
@@ -102,12 +102,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("4") || roleList.get(t).equals("5")
-                        || roleList.get(t).equals("6") || roleList.get(t).equals("7")|| roleList.get(t).equals("8")
-                        || roleList.get(t).equals("9")
-                        || roleList.get(t).equals("10")
-                        || roleList.get(t).equals("13")
-                        || roleList.get(t).equals("14")){
+                if (roleList.get(t).equals("6")){
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
                     List<TaskInfo> TaskList = this.workItemRealationMapper.selectTaskInfo(pageNo, pageSize, admin,startDate,endDate);
@@ -144,11 +139,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if ( roleList.get(t).equals("7")|| roleList.get(t).equals("8")
-                        || roleList.get(t).equals("9")
-                        || roleList.get(t).equals("10")
-                        || roleList.get(t).equals("13")
-                        || roleList.get(t).equals("14")) {
+                if ( roleList.get(t).equals("6")) {
                     JSONObject json = new JSONObject();
                     List<String> result = Arrays.asList(idGroup.split(","));
                     int status = this.workItemRealationMapper.claim(result, admin);
@@ -177,11 +168,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("7") || roleList.get(t).equals("8")
-                        || roleList.get(t).equals("9")
-                        || roleList.get(t).equals("10")
-                        || roleList.get(t).equals("13")
-                        || roleList.get(t).equals("14")) {
+                if (roleList.get(t).equals("7")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
                     List<WorkitemRelationPlan> AssemblyList = this.workItemRealationMapper.selectAssemblyInfo(pageNo, pageSize, admin,startDate,endDate);
@@ -219,11 +206,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try {
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("7") || roleList.get(t).equals("8")
-                        || roleList.get(t).equals("9")
-                        || roleList.get(t).equals("10")
-                        || roleList.get(t).equals("13")
-                        || roleList.get(t).equals("14")) {
+                if (roleList.get(t).equals("7")) {
                     List<AssemblyInfo> AssemblyInfoList = com.alibaba.fastjson.JSONArray.parseArray(idGroup,
                             AssemblyInfo.class);
                     //List<String> result = Arrays.asList(idGroup.split(","));
@@ -246,7 +229,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("12") ) {
+                if (roleList != null) {
                     if (StringUtil.notEmpty(type)) {
                         Integer current = pageNo;
                         pageNo = (pageNo - 1) * pageSize;
@@ -302,7 +285,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                 typeName = "平直焊透";
             }
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("12")) {
+                if (roleList != null) {
                     List<String> result = Arrays.asList(idGroup.split(","));
 
                     int status = this.workItemMapper.insert(admin,result,type,typeName);
@@ -338,8 +321,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("3") || roleList.get(t).equals("11")
-                ) {
+                if (roleList.get(t).equals("16")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
                     Integer newTotal = this.workItemRealationMapper.getTotal();
@@ -385,12 +367,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("4") || roleList.get(t).equals("5")
-                        || roleList.get(t).equals("6") || roleList.get(t).equals("7")|| roleList.get(t).equals("8")
-                        || roleList.get(t).equals("9")
-                        || roleList.get(t).equals("10")
-                        || roleList.get(t).equals("13")
-                        || roleList.get(t).equals("14")){
+                if (roleList != null){
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
                     List<WorkItem> TaskList = this.workItemRealationMapper.getWeldingSelect(pageNo, pageSize,startDate,endDate);
@@ -430,7 +407,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
         try {
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("3")) {
+                if (roleList.get(t).equals("16")) {
                     List<String> result = Arrays.asList(idGroup.split(","));
                     this.workItemRealationMapper.out(result, carNumber,admin);
                     for(int i=0; i<result.size(); i++){

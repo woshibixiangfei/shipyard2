@@ -75,7 +75,7 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("1")) {
+                if (roleList.get(t).equals("1")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
                     List<AccCommonInfo> accCommonInfoList = this.accCommonInfoMapper.selectAll2(shipNumber, segmentation, pageNo, pageSize, startDate, endDate);
@@ -121,7 +121,7 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("2")) {
+                if (roleList.get(t).equals("3")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
                     List<AccInecomingInfo> accInecomingInfoList = this.accCommonInfoMapper.selectAccInecomingInfo(pageNo, pageSize,startDate,endDate);
@@ -169,7 +169,7 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
         try{
         List<String> roleList = this.adminService.getRole(admin);
         for (int t = 0; t < roleList.size(); t++) {
-            if (roleList.get(t).equals("11") || roleList.get(t).equals("1")) {
+            if (roleList.get(t).equals("1")) {
                 List<String> result = Arrays.asList(idGroup.split(","));
                 JSONObject json = new JSONObject();
                 String dateNow = new DateUtils().dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -204,7 +204,7 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("1")) {
+                if (roleList.get(t).equals("2")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
                     List<AccCommonInfo> InvoiceInfoList = this.accCommonInfoMapper.selectInvoiceInfo(1, pageNo, pageSize,startDate,endDate);
@@ -248,7 +248,7 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
             String dateNow = new DateUtils().dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11") || roleList.get(t).equals("1")) {
+                if (roleList.get(t).equals("2")) {
                     this.accCommonInfoMapper.updateById3(admin, dateNow);
                     List<String> result = Arrays.asList(idGroup.split(","));
                     if (StringUtil.notEmpty(idGroup)) {
