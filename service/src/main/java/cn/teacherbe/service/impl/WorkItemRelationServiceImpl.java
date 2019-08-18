@@ -69,20 +69,17 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     }
 
     @Override
-    public String underPlan(String idGroup, String kua, String admin) {
+    public String underPlan(String idGroup, String admin) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList.get(t).equals("5")) {
                     JSONObject json = new JSONObject();
-                    List<String> result = Arrays.asList(idGroup.split(","));
-                    int status = this.workItemRealationMapper.underPlan(admin, result, kua);
-                    if (status > 0) {
-                        json.put("status", "success");
-                        //statusMap.put("info","账号密码不能为空！");
-                    } else {
-                        json.put("status", "failed");
-                    }
+                    List<UnderPlan> UnderPlan = com.alibaba.fastjson.JSONArray.parseArray(idGroup, UnderPlan.class);
+                    int status = this.workItemRealationMapper.underPlan(admin, UnderPlan);
+                    int status2 = this.workItemRealationMapper.underPlan2(admin, UnderPlan);
+                    json.put("status", "success");
+                    //statusMap.put("info","账号密码不能为空！");
                     return json.toString();
                 }
             }
@@ -209,8 +206,29 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                 if (roleList.get(t).equals("7")) {
                     List<AssemblyInfo> AssemblyInfoList = com.alibaba.fastjson.JSONArray.parseArray(idGroup,
                             AssemblyInfo.class);
+                    for(int j=0; j<roleList.size(); j++) {
+                        if(roleList.get(j).equals("17")) {
+                            for (int i = 0; i < AssemblyInfoList.size(); i++) {
+                                if(AssemblyInfoList.get(i).getProcess().indexOf("2") != -1){
+                                    this.workItemRealationMapper.insertDaSB(AssemblyInfoList.get(i).getId());
+                                }
+
+                            }
+                        }
+
+                    }
                     //List<String> result = Arrays.asList(idGroup.split(","));
                     this.workItemRealationMapper.assembly(AssemblyInfoList, admin);
+                    for(int c=0; c<roleList.size(); c++) {
+                        if (roleList.get(c).equals("17")){
+                            this.workItemRealationMapper.assembly2(AssemblyInfoList);
+                        }
+                        for (int b = 0; b < AssemblyInfoList.size(); b++) {
+                            if(AssemblyInfoList.get(b).getProcess().equals("2")){
+                                this.workItemRealationMapper.done(AssemblyInfoList.get(b).getId(),admin);
+                            }
+                        }
+                    }
                     json.put("status", "success");
                     return json.toString();
                 }
@@ -274,15 +292,19 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
             List<String> roleList = this.adminService.getRole(admin);
             String typeName = null;
             if(type == 1){
-                typeName = "平直校直";
+                typeName = "手工焊接";
             } else if(type == 2){
-                typeName = "线性校直";
+                typeName = "线型焊接";
             } else if(type == 3){
-                typeName = "焊接";
+                typeName = "平直焊接";
             } else if(type == 4){
-                typeName = "线性焊透";
+                typeName = "平直校直";
             } else if(type == 5){
                 typeName = "平直焊透";
+            } else if(type == 6){
+                typeName = "线型校直";
+            } else if(type == 7){
+                typeName = "线型焊透";
             }
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList != null) {
@@ -293,15 +315,26 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     //this.workItemRealationMapper.assembly(AssemblyInfoList,admin);
                     for (int i = 0; i < result.size(); i++) {
                         List<Integer> idTeam = this.workItemMapper.selectProcess(Integer.parseInt(result.get(i)));
+                        boolean dasabi = true;
                         //WorkItem workItem = this.workItemMapper.selectByWorkId(Integer.parseInt(result.get(i)));
                         for (int j = 0; j < idTeam.size(); j++) {
+                            if(idTeam.get(j) == 0){
+                                continue;
+                            }
                             List<WorkItem> workList = this.workItemMapper.selectByWrokId(Integer.parseInt(result.get(i)),idTeam.get(j));
                             if(workList == null || workList.isEmpty()){
-                                json.put("status", "success");
-                                return json.toString();
+                                dasabi = false;
                             }
                         }
+                        if(dasabi == true){
                             this.workItemRealationMapper.done(Integer.parseInt(result.get(i)), admin);
+                        }
+
+                        int a = this.workItemRealationMapper.a(Integer.parseInt(result.get(i)));
+                        int b = this.workItemRealationMapper.b(Integer.parseInt(result.get(i)));
+                        if(a == b){
+                            this.workItemRealationMapper.c(Integer.parseInt(result.get(i)),admin);
+                        }
                     }
                     json.put("status", "success");
                     return json.toString();

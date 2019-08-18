@@ -57,7 +57,7 @@
       LEFT JOIN t_admin_role b ON a.id = b.admin_id
       WHERE
       a.delete_flag = 0
-      AND a.`no` = 'yikuayiban'
+      AND a.`no` = #{no,jdbcType=VARCHAR}
       )
       AND c.name like '%跨%'
       ),#{typeName,jdbcType=VARCHAR}), SYSDATE(),

@@ -4,7 +4,7 @@ public interface WorkItemRelationService {
 
     public String getPlan(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate);
 
-    public String underPlan(String idGroup, String kua, String admin);
+    public String underPlan(String idGroup, String admin);
 
     public String getTaskInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate);
 

@@ -54,13 +54,25 @@ public interface WorkitemRelationMapper {
 
     Integer getWeldingSelectCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-    int underPlan(@Param("updater")String updater,@Param("idGroup")List<String> idGroup,@Param("kua")String kua);
+    int a(@Param("id")Integer id);
+
+    int b(@Param("id")Integer id);
+
+    int c(@Param("id")Integer id,@Param("updater")String updater);
+
+    int underPlan(@Param("updater")String updater,@Param("idGroup")List<UnderPlan> idGroup);
+
+    int underPlan2(@Param("updater")String updater,@Param("idGroup")List<UnderPlan> idGroup);
 
     int claim(@Param("idGroup")List<String> idGroup,@Param("no")String no);
 
     int assembly(@Param("idGroup")List<AssemblyInfo> idGroup, @Param("no")String no);
 
+    int assembly2(@Param("idGroup")List<AssemblyInfo> idGroup);
+
     int done(@Param("id")Integer id, @Param("no")String no);
+
+    int insertDaSB(@Param("id")Integer id);
 
     int out(@Param("idGroup")List<String> idGroup,  @Param("carNumber")String carNumber,@Param("no")String no);
 

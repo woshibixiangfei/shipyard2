@@ -87,7 +87,7 @@ public class AdminController {
             JSONObject statusMap = new JSONObject();
             List<String> roleList = this.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("11")) {
+                if (roleList.get(t).equals("1")) {
                     MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
                     MultipartFile file = multipartRequest.getFile("filename");

@@ -39,7 +39,7 @@ public class AdminServiceImpl implements AdminService {
         try{
             List<String> roleList = this.getRole(admin);
             for(int i=0; i<roleList.size(); i++){
-                if(roleList.get(i).equals("11")){
+                if(roleList.get(i).equals("0")){
                     this.adminMapper.deleteAdmin(adminId);
                     JSONObject json = new JSONObject();
                     json.put("status", "success");

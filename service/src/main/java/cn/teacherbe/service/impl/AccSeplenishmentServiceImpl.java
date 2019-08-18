@@ -35,7 +35,7 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
             pageNo = (pageNo - 1) * pageSize;
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
-                if (roleList.get(t).equals("4")) {
+                if (roleList.get(t).equals("2") || roleList.get(t).equals("3")) {
                     List<AccSeplenishmentInfo> AccSeplenishmentList = this.accSeplenishmentMapper.selectAll(pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(AccSeplenishmentList);
                     Integer total = this.accSeplenishmentMapper.selectAllCount(startDate,endDate);
@@ -59,9 +59,6 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
                     String jsonStr = json.toString();
                     return jsonStr;
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -217,9 +214,6 @@ public class AccSeplenishmentServiceImpl implements AccSeplenishmentService {
                     String jsonStr = json.toString();
                     return jsonStr;
                 }
-                JSONObject json = new JSONObject();
-                json.put("status", "failed");
-                return json.toString();
             }
         } catch (Exception e){
             e.printStackTrace();

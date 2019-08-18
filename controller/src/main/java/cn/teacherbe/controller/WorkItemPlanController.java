@@ -35,8 +35,8 @@ public class WorkItemPlanController {
      * @description 下计划
      * */
     @RequestMapping(value = "/underPlan")
-    public String underPlan(String idGroup, String kua, String admin){
-        String underPlan = this.workItemRelationService.underPlan(idGroup,kua,admin);
+    public String underPlan(String idGroup, String admin){
+        String underPlan = this.workItemRelationService.underPlan(idGroup,admin);
         return underPlan;
     }
 
