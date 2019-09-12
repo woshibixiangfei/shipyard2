@@ -18,8 +18,8 @@ public class AccCommonInfoController {
      * @description 获取物料信息
      * */
     @RequestMapping(value = "/getAccCommonInfo")
-    public String getAccCommonInfo(String shipNumber, String segmentation, Integer pageNo, Integer pageSize, String admin,String startDate,String endDate){
-        String AccCommonInfo = this.accCommonInfoService.getAccCommonInfo(shipNumber,segmentation,pageNo,pageSize,admin,startDate,endDate);
+    public String getAccCommonInfo(String shipNumber, String segmentation, Integer pageNo, Integer pageSize,String type, String admin,String startDate,String endDate){
+        String AccCommonInfo = this.accCommonInfoService.getAccCommonInfo(shipNumber,segmentation,pageNo,pageSize,type,admin,startDate,endDate);
         return AccCommonInfo;
     }
 

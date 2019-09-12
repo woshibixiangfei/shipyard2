@@ -1,5 +1,7 @@
 package cn.teacherbe.service;
 
+import java.util.List;
+
 public interface ShipSegmentationService {
 
     public boolean createShipSegmentation(String shipNumber,String admin,Integer size);

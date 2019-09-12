@@ -25,6 +25,8 @@ public class OutInfo {
 
     private String carNumber;
 
+    private String updater;
+
     public Integer getId() {
         return id;
     }
@@ -119,5 +121,13 @@ public class OutInfo {
 
     public void setCarNumber(String carNumber) {
         this.carNumber = carNumber;
+    }
+
+    public String getUpdater() {
+        return updater;
+    }
+
+    public void setUpdater(String updater) {
+        this.updater = updater;
     }
 }

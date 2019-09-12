@@ -16,6 +16,8 @@ public interface ShipSegmentationMapper {
 
     ShipSegmentation selectByPrimaryKey(Integer id);
 
+    ShipSegmentation selectByNumber(@Param("shipId")Integer shipId,@Param("segmentation")String segmentation);
+
     List<Segmentation> querySegmentation(String shipName);
 
     List<ShipSegmentation2> selectAll(@Param("shipNumber")String shipNumber, @Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize);
@@ -25,6 +27,8 @@ public interface ShipSegmentationMapper {
     int updateByPrimaryKeySelective(ShipSegmentation record);
 
     int updateByPrimaryKey(ShipSegmentation record);
+
+    int updateAnother(@Param("shipId")Integer shipId,@Param("segmentation")String segmentation,@Param("number")Integer size);
 
     int updateFuckyou(@Param("shipNumber")String shipNumber, @Param("segmentation")Integer segmentation);
 }

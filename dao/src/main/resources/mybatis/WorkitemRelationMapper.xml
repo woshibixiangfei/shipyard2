@@ -23,6 +23,9 @@
     <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
     <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="length" jdbcType="INTEGER" property="length" />
+    <result column="workitem_status" jdbcType="INTEGER" property="workitemStatus" />
+    <result column="process" jdbcType="VARCHAR" property="process" />
   </resultMap>
   <resultMap id="BaseResultMap3" type="cn.teacherbe.entity.TaskInfo">
     <result column="id" jdbcType="INTEGER" property="id" />
@@ -51,6 +54,7 @@
     <result column="workitem_status" jdbcType="VARCHAR" property="workitemStatus" />
     <result column="executive_class" jdbcType="VARCHAR" property="executiveClass" />
     <result column="car_number" jdbcType="VARCHAR" property="carNumber" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
   </resultMap>
   <resultMap id="BaseResultMap6" type="cn.teacherbe.entity.FuckYou">
     <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
@@ -85,6 +89,22 @@
   </select>
   <select id="getDone" resultType="Integer">
     SELECT COUNT(*) FROM t_workitem_relation WHERE workitem_status = 4 and (delete_flag = 0 or delete_flag is null);
+  </select>
+  <select id="getAssemblyInfoDone" resultType="Integer">
+    SELECT COUNT(*) FROM t_workitem_relation
+  WHERE workitem_status > 1
+  and (delete_flag = 0 or delete_flag is null)
+  and executive_class = (SELECT
+    c.id
+    FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+	AND c.name = #{no,jdbcType=VARCHAR})
+	AND to_days(update_date) = to_days(now())
   </select>
   <select id="selectPlan" resultMap="BaseResultMap2">
     SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number
@@ -130,10 +150,25 @@
   <select id="selectTaskInfo" resultMap="BaseResultMap3">
     SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,
     t.workitem_status,CASE WHEN t.executive_class='nothing' and t.status is null THEN '未分配' WHEN t.executive_class='17' and t.status is null THEN '一跨已认领'
-    WHEN t.executive_class='18' and t.status is null THEN '二跨已认领' WHEN t.executive_class='19' and t.status is null THEN '三跨已认领' WHEN t.executive_class='20' and t.status is null THEN '二跨一班已认领'
-    WHEN t.executive_class='21' and t.status is null THEN '二跨二班已认领' WHEN t.executive_class='22' and t.status is null THEN '三跨一班已认领' WHEN t.executive_class='23' and t.status is null THEN '三跨二班已认领' WHEN t.executive_class='nothing' and t.status=11 THEN '(一跨转入)未分配' WHEN t.executive_class='17' and t.status=11 THEN '(一跨转入)一跨已认领'
-    WHEN t.executive_class='18' and t.status=11 THEN '(一跨转入)二跨已认领' WHEN t.executive_class='19' and t.status=11 THEN '(一跨转入)三跨已认领' WHEN t.executive_class='20' and t.status=11 THEN '(一跨转入)二跨一班已认领'
-    WHEN t.executive_class='21' and t.status=11 THEN '(一跨转入)二跨二班已认领' WHEN t.executive_class='22' and t.status=11 THEN '(一跨转入)三跨一班已认领' WHEN t.executive_class='23' and t.status=11 THEN '(一跨转入)三跨二班已认领'END
+    WHEN t.executive_class='18' and t.status is null THEN '二跨已认领' WHEN t.executive_class='19' and t.status is null THEN '三跨已认领' WHEN t.executive_class='20' and t.status is null THEN '王继先已认领'
+    WHEN t.executive_class='21' and t.status is null THEN '董世坤已认领' WHEN t.executive_class='22' and t.status is null THEN '孙伟已认领' WHEN t.executive_class='23' and t.status is null THEN '兹兆言已认领'
+    WHEN t.executive_class='24' and t.status is null THEN '徐恩成已认领'
+    WHEN t.executive_class='25' and t.status is null THEN '刘恩胜已认领'
+    WHEN t.executive_class='nothing' and t.status=11 THEN '(一跨转入)未分配' WHEN t.executive_class='17' and t.status=11 THEN '(一跨转入)一跨已认领'
+    WHEN t.executive_class='18' and t.status=11 THEN '(一跨转入)二跨已认领' WHEN t.executive_class='19' and t.status=11 THEN '(一跨转入)三跨已认领'
+    WHEN t.executive_class='20' and t.status=11 THEN '(一跨转入)王继先已认领'
+    WHEN t.executive_class='21' and t.status=11 THEN '(一跨转入)董世坤已认领'
+    WHEN t.executive_class='22' and t.status=11 THEN '(一跨转入)孙伟已认领'
+    WHEN t.executive_class='23' and t.status=11 THEN '(一跨转入)兹兆言已认领'
+    WHEN t.executive_class='24' and t.status=11 THEN '(一跨转入)徐恩成已认领'
+    WHEN t.executive_class='25' and t.status=11 THEN '(一跨转入)刘恩胜已认领'
+    WHEN t.executive_class='nothing2' and t.status is null and t.fuck = 2 and t.updater = '王继先' THEN '王继先回退'
+    WHEN t.executive_class='nothing2' and t.status is null and t.fuck = 2 and t.updater = '董世坤' THEN '董世坤回退'
+    WHEN t.executive_class='nothing2' and t.status is null and t.fuck = 2 and t.updater = '孙伟' THEN '孙伟回退'
+    WHEN t.executive_class='nothing2' and t.status is null and t.fuck = 2 and t.updater = '兹兆言' THEN '兹兆言回退'
+    WHEN t.executive_class='nothing2' and t.status is null and t.fuck = 2 and t.updater = '徐恩成' THEN '徐恩成回退'
+    WHEN t.executive_class='nothing2' and t.status is null and t.fuck = 2 and t.updater = '刘恩胜' THEN '刘恩胜回退'
+    END
     as executive_class
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
@@ -144,7 +179,7 @@
     AND t.execution_cross &lt;&gt; 'nothing'
     AND (t.execution_cross in (
     SELECT
-    CASE WHEN c.id=17 THEN '1' WHEN c.id=18 or c.id=20 or c.id=21 THEN '2' WHEN c.id=19 or c.id=22 or c.id=23 THEN '3' ELSE 0 END
+    CASE WHEN c.id=17 OR c.id=24 OR c.id=25 THEN '1' WHEN c.id=18 or c.id=21 or c.id=23 THEN '2' WHEN c.id=19 or c.id=20 or c.id=22 THEN '3' ELSE 0 END
     FROM t_role c where c.id in (
     SELECT b.role_id from t_admin a
     LEFT JOIN t_admin_role b ON a.id = b.admin_id
@@ -177,7 +212,7 @@
     AND t.execution_cross &lt;&gt; 'nothing'
     AND (t.execution_cross in (
     SELECT
-    CASE WHEN c.id=17 THEN '1' WHEN c.id=18 or c.id=20 or c.id=21 THEN '2' WHEN c.id=19 or c.id=22 or c.id=23 THEN '3'ELSE '0' END
+    CASE WHEN c.id=17 OR c.id=24 OR c.id=25 THEN '1' WHEN c.id=18 or c.id=21 or c.id=23 THEN '2' WHEN c.id=19 or c.id=20 or c.id=22 THEN '3' ELSE 0 END
     FROM t_role c where c.id in (
     SELECT b.role_id from t_admin a
     LEFT JOIN t_admin_role b ON a.id = b.admin_id
@@ -200,18 +235,19 @@
   </select>
 
   <select id="selectAssemblyInfo" resultMap="BaseResultMap2">
-    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,t.update_date
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,CONCAT(t1.part_number,',',t2.part_number) as part_number,
+    t.update_date,t1.length,t.workitem_status,t.process
     FROM t_workitem_relation t
     LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
-    AND t.workitem_status IN (0,1)
+    AND t.workitem_status IN (0,1,2)
     AND t.execution_cross &lt;&gt; 'nothing'
     AND t.executive_class &lt;&gt; 'nothing'
     AND (t.execution_cross in (
     SELECT
-    CASE WHEN c.id=17 THEN '1' WHEN c.id=18 or c.id=20 or c.id=21 THEN '2' WHEN c.id=19 or c.id=22 or c.id=23 THEN '3' ELSE '0' END
+    CASE WHEN c.id=17 OR c.id=24 OR c.id=25 THEN '1' WHEN c.id=18 or c.id=21 or c.id=23 THEN '2' WHEN c.id=19 or c.id=20 or c.id=22 THEN '3' ELSE 0 END
     FROM t_role c where c.id in (
     SELECT b.role_id from t_admin a
     LEFT JOIN t_admin_role b ON a.id = b.admin_id
@@ -259,11 +295,11 @@
     LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
-    AND t.workitem_status IN (0,1)
+    AND t.workitem_status IN (0,1,2)
     AND t.execution_cross &lt;&gt; 'nothing'
     AND (t.execution_cross in (
     SELECT
-    CASE WHEN c.id=17 THEN '1' WHEN c.id=18 or c.id=20 or c.id=21 THEN '2' WHEN c.id=19 or c.id=22 or c.id=23 THEN '3' ELSE '0' END
+    CASE WHEN c.id=17 OR c.id=24 OR c.id=25 THEN '1' WHEN c.id=18 or c.id=21 or c.id=23 THEN '2' WHEN c.id=19 or c.id=20 or c.id=22 THEN '3' ELSE 0 END
     FROM t_role c where c.id in (
     SELECT b.role_id from t_admin a
     LEFT JOIN t_admin_role b ON a.id = b.admin_id
@@ -324,7 +360,7 @@
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     ))
-    OR '孔祥禹' = '孔祥禹')
+    OR '孔祥禹' = #{no,jdbcType=VARCHAR})
     AND t.process &lt;&gt; 'nothing'
     AND t.process like '%${type}%'
     AND t.update_date BETWEEN
@@ -353,7 +389,7 @@
     a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     ))
-    OR '孔祥禹' = '孔祥禹')
+    OR '孔祥禹' = #{no,jdbcType=VARCHAR})
     AND t.process &lt;&gt; 'nothing'
     AND t.process like '%${type}%'
     AND t.update_date BETWEEN
@@ -370,6 +406,18 @@
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t3.description is not null
     AND t.workitem_status in(2,3,4,6)
+    and (executive_class = (SELECT
+    c.id
+    FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+	AND c.name = #{no,jdbcType=VARCHAR})
+	OR '孔祥禹' = #{no,jdbcType=VARCHAR}
+	)
     AND t3.update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
@@ -384,6 +432,17 @@
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t3.description is not null
     AND t.workitem_status in(2,3,4,6)
+    and (executive_class = (SELECT
+    c.id
+    FROM t_role c where c.id in (
+    SELECT b.role_id from t_admin a
+    LEFT JOIN t_admin_role b ON a.id = b.admin_id
+    WHERE
+    a.delete_flag = 0
+    AND a.`no` = #{no,jdbcType=VARCHAR}
+    )
+	AND c.name = #{no,jdbcType=VARCHAR})
+	OR '孔祥禹' = #{no,jdbcType=VARCHAR})
     AND t3.update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
@@ -434,6 +493,16 @@
     WHERE
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t.workitem_status in (3,4)
+    <trim>
+      <if test="segmentation != null">
+        AND t1.segmentation = #{segmentation,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    <trim>
+      <if test="shipNumber != null">
+        AND t1.ship_number = #{shipNumber,jdbcType=VARCHAR}
+      </if>
+    </trim>
     AND t.update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
@@ -449,6 +518,32 @@
     AND t.workitem_status in (3,4)
     AND t.update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
+  </select>
+
+  <select id="selectOutInfo2" resultMap="BaseResultMap5">
+    SELECT t.id,t1.ship_number,t1.batch,t1.segmentation,
+    CONCAT(t1.part_number,',',t2.part_number) as part_number,
+    t.workitem_status,t.car_number,t.updater
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status = 4
+		AND t.updater = #{no,jdbcType=VARCHAR}
+		AND to_days(t.update_date) = to_days(now())
+	LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="selectOutInfoCount2" resultType="Integer">
+    SELECT count(*)
+    FROM t_workitem_relation t
+    LEFT JOIN t_acc_commoninfo t1 ON t.one_common_id = t1.id
+    LEFT JOIN t_acc_commoninfo t2 ON t.two_common_id = t2.id
+    WHERE
+    (t.delete_flag = 0 or t.delete_flag is null)
+    AND t.workitem_status = 4
+		AND t.updater = #{no,jdbcType=VARCHAR}
+		AND to_days(t.update_date) = to_days(now())
   </select>
   <select id="a" resultType="Integer">
     select count(*)
@@ -469,6 +564,9 @@
     WHERE delete_flag = 1
     AND one_common_id = (select one_common_id from (select one_common_id from t_workitem_relation where id = #{id,jdbcType=INTEGER}) a)
 
+  </update>
+  <update id="d" >
+    update t_workitem_relation set workitem_status = 0,executive_class = 'nothing2',fuck=2,update_date = SYSDATE(),updater = #{updater,jdbcType=VARCHAR} where delete_flag = 0 and id = #{id,jdbcType=INTEGER};
   </update>
   <update id="underPlan" >
     UPDATE t_workitem_relation
@@ -506,7 +604,7 @@
     WHERE a.delete_flag = 0
     AND a.`no` = #{no,jdbcType=VARCHAR}
     )
-    AND c.name like '%跨%'
+    AND c.name like '%${no}%'
     ),t.workitem_status = 1,t.updater = #{no,jdbcType=VARCHAR}
     ,t.update_date = SYSDATE()
     WHERE (t.delete_flag = 0 OR t.delete_flag IS NULL)
@@ -561,6 +659,10 @@
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_workitem_relation
     where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByOne" parameterType="java.lang.Integer">
+    delete from t_workitem_relation
+    where one_common_id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="cn.teacherbe.entity.WorkitemRelation">
     insert into t_workitem_relation (id, one_common_id, two_common_id, 

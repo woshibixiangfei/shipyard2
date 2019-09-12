@@ -3,9 +3,7 @@ package cn.teacherbe.service.impl;
 import cn.teacherbe.dao.AccCommonInfoMapper;
 import cn.teacherbe.dao.AccSeplenishmentMapper;
 import cn.teacherbe.dao.WorkitemRelationMapper;
-import cn.teacherbe.entity.AccCommonInfo;
-import cn.teacherbe.entity.AccInecomingInfo;
-import cn.teacherbe.entity.WorkitemRelation;
+import cn.teacherbe.entity.*;
 import cn.teacherbe.service.AccCommonInfoService;
 import cn.teacherbe.service.AdminService;
 import cn.teacherbe.utils.DateUtils;
@@ -71,16 +69,16 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
      * @description 获取物料信息
      * */
     @Override
-    public String getAccCommonInfo(String shipNumber, String segmentation, Integer pageNo, Integer pageSize, String admin, String startDate, String endDate) {
+    public String getAccCommonInfo(String shipNumber, String segmentation, Integer pageNo, Integer pageSize,String type, String admin, String startDate, String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
                 if (roleList.get(t).equals("1")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<AccCommonInfo> accCommonInfoList = this.accCommonInfoMapper.selectAll2(shipNumber, segmentation, pageNo, pageSize, startDate, endDate);
+                    List<AccCommonInfo> accCommonInfoList = this.accCommonInfoMapper.selectAll2(shipNumber, segmentation, pageNo, pageSize, type, startDate, endDate);
                     JSONArray jsonObject = JSONArray.fromObject(accCommonInfoList);
-                    Integer total = this.accCommonInfoMapper.selectAll2Count(shipNumber, segmentation,startDate, endDate);
+                    Integer total = this.accCommonInfoMapper.selectAll2Count(shipNumber, segmentation,type, startDate, endDate);
                     Integer day = this.accCommonInfoMapper.selectAll2Day(shipNumber, segmentation);
                     Integer month = this.accCommonInfoMapper.selectAll2Month(shipNumber, segmentation);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
@@ -171,9 +169,11 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
         for (int t = 0; t < roleList.size(); t++) {
             if (roleList.get(t).equals("1")) {
                 List<String> result = Arrays.asList(idGroup.split(","));
+                List<DASHABI> dashabi = com.alibaba.fastjson.JSONArray.parseArray(idGroup, DASHABI.class);
                 JSONObject json = new JSONObject();
+
                 String dateNow = new DateUtils().dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
-                int status = this.accCommonInfoMapper.updateById(admin, dateNow, result);
+                int status = this.accCommonInfoMapper.updateById(admin, dateNow, dashabi);
                 if (status > 0) {
                     json.put("status", "success");
                     //statusMap.put("info","账号密码不能为空！");
@@ -207,15 +207,23 @@ public class AccCommonInfoServiceImpl implements AccCommonInfoService {
                 if (roleList.get(t).equals("2")) {
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<AccCommonInfo> InvoiceInfoList = this.accCommonInfoMapper.selectInvoiceInfo(1, pageNo, pageSize,startDate,endDate);
+                    List<AccCommonInfo> InvoiceInfoList = this.accCommonInfoMapper.selectInvoiceInfo(pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(InvoiceInfoList);
-                    Integer total = this.accCommonInfoMapper.selectInvoiceInfoCount(1,startDate,endDate);
+                    Integer total = this.accCommonInfoMapper.selectInvoiceInfoCount(startDate,endDate);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
+                    Integer newTotal = this.accCommonInfoMapper.getTotal();
+                    Integer done = this.accCommonInfoMapper.getDone();
+                    Integer unDone = this.accCommonInfoMapper.getUnDone();
+                    Integer doneDay = this.accCommonInfoMapper.getDoneDay();
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
                     JSONObject data = new JSONObject();
                     data.put("total", total);
                     data.put("totalPage", totalPage);
+                    data.put("newTotal", newTotal);
+                    data.put("done", done);
+                    data.put("unDone", unDone);
+                    data.put("doneDay", doneDay);
                     data.put("pageNo", current);
                     data.put("pageSize", InvoiceInfoList.size());
                     JSONArray jsonArray = JSONArray.fromObject(jsonObject);

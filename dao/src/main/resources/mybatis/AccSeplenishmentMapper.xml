@@ -22,7 +22,10 @@
     <result column="replenishment_status" jdbcType="INTEGER" property="replenishmentStatus" />
     <result column="arrival_status" jdbcType="INTEGER" property="arrivalStatus" />
     <result column="number_plate" jdbcType="VARCHAR" property="numberPlate" />
+    <result column="group" jdbcType="VARCHAR" property="group" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="text" jdbcType="VARCHAR" property="text" />
   </resultMap>
   <resultMap id="BaseResultMap3" type="cn.teacherbe.entity.PairEntity">
     <result column="common_id" jdbcType="INTEGER" property="id" />
@@ -41,7 +44,10 @@
   <select id="selectAll" resultMap="BaseResultMap2">
     select a.* from
     (select
-    t.id,t2.ship_number,t2.segmentation,t2.batch,t2.part_number,t.replenishment_status,t.arrival_status,t.number_plate,t.update_date
+    t.id,t2.ship_number,t2.segmentation,t2.batch,
+    t2.part_number,t2.group,t.replenishment_status,
+    t.arrival_status,t.number_plate,t.update_date,
+    t2.updater,t2.text
     from t_acc_seplenishment t
 		LEFT JOIN t_acc_commoninfo t2 ON t.common_id = t2.id
     where t.delete_flag = 0

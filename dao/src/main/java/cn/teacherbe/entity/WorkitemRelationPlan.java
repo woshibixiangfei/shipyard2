@@ -19,6 +19,12 @@ public class WorkitemRelationPlan {
 
     private String updateDate;
 
+    private Integer length;
+
+    private Integer workitemStatus;
+
+    private String process;
+
     //private String partNumber2;
 
     public Integer getId() {
@@ -99,5 +105,29 @@ public class WorkitemRelationPlan {
 
     public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public Integer getWorkitemStatus() {
+        return workitemStatus;
+    }
+
+    public void setWorkitemStatus(Integer workitemStatus) {
+        this.workitemStatus = workitemStatus;
+    }
+
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
     }
 }

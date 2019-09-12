@@ -34,29 +34,36 @@ public class ShipSegmentationServiceImpl implements ShipSegmentationService {
         Date nowDate = new DateUtils().stringtoDate(dateNow,"yyyy-MM-dd HH:mm:ss");
         List<Segmentation> segmentationList = this.shipSegmentationMapper.querySegmentation(shipNumber);
         if(segmentationList != null && !segmentationList.isEmpty()){
+
             ShipSegmentation shipSegmentation = new ShipSegmentation();
 
             for(Segmentation segmentation : segmentationList){
-                shipSegmentation.setShipId(segmentation.getShipId());
-                shipSegmentation.setSegmentation(String.valueOf(new Double(segmentation.getSegmentation()).intValue()));
-                size = this.accCommonInfoMapper.selectAll3Count(shipNumber,String.valueOf(new Double(segmentation.getSegmentation()).intValue()));
-                shipSegmentation.setCreator(admin);
-                shipSegmentation.setUpdater(admin);
-                shipSegmentation.setDeleteFlag(0);
-                shipSegmentation.setStatus(0);
-                shipSegmentation.setNumber(size);
-                shipSegmentation.setRegisterDate(dateNow);
-                shipSegmentation.setUpdateDate(dateNow);
-                int createSegmentationStatus = this.shipSegmentationMapper.insert(shipSegmentation);
-                if(createSegmentationStatus != 1){
-                    continue;
+                ShipSegmentation ss = this.shipSegmentationMapper.selectByNumber(segmentation.getShipId(),segmentation.getSegmentation());
+                if(ss == null) {
+                    shipSegmentation.setShipId(segmentation.getShipId());
+                    shipSegmentation.setSegmentation(String.valueOf(new Double(segmentation.getSegmentation()).intValue()));
+                    //size = this.accCommonInfoMapper.selectAll3Count(shipNumber, String.valueOf(new Double(segmentation.getSegmentation()).intValue()));
+                    shipSegmentation.setCreator(admin);
+                    shipSegmentation.setUpdater(admin);
+                    shipSegmentation.setDeleteFlag(0);
+                    shipSegmentation.setStatus(0);
+                    shipSegmentation.setNumber(size);
+                    shipSegmentation.setRegisterDate(dateNow);
+                    shipSegmentation.setUpdateDate(dateNow);
+                    int createSegmentationStatus = this.shipSegmentationMapper.insert(shipSegmentation);
+                    if (createSegmentationStatus != 1) {
+                        continue;
+                    }
+                } else {
+                    ShipSegmentation test = new ShipSegmentation();
+                    //size = this.accCommonInfoMapper.selectAll3Count(shipNumber, String.valueOf(new Double(segmentation.getSegmentation()).intValue()));
+                    this.shipSegmentationMapper.updateAnother(segmentationList.get(0).getShipId(),segmentationList.get(0).getSegmentation(),size);
                 }
             }
             return true;
         }
         return false;
     }
-
     /*
      * @author 毕翔斐
      * @version 1.0

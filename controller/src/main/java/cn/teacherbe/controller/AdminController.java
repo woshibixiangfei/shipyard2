@@ -95,39 +95,42 @@ public class AdminController {
                         statusMap.put("status", "failed");
                         return statusMap;
                     }
-                    InputStream inputStream = file.getInputStream();
-                    Workbook work = adminService.getWorkbook(inputStream, file.getOriginalFilename());
-                    String shipNumber = work.getSheetName(0);
-                    inputStream.close();
+
                     InputStream inputStream2 = file.getInputStream();
                     List<List<Object>> list = adminService.getBankListByExcel(inputStream2, file.getOriginalFilename());
                     inputStream2.close();
+                    String shipNumber = list.get(1).get(1).toString();
                     boolean createShipStatus = this.shipNumberService.createShipNumber(shipNumber, admin);
-                    if (createShipStatus == false) {
+                    //boolean createSegmentationStatus = this.shipSegmentationService.createShipSegmentation(shipNumber, admin,0,list);
+                    /*if (createShipStatus == false) {
                         statusMap.put("status", "failed");
                         return statusMap;
-                    }
+                    }*/
                     AccCommonInfo accCommonInfo = new AccCommonInfo();
                     String dateNow = new DateUtils().dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
                     Date nowDate = new DateUtils().stringtoDate(dateNow, "yyyy-MM-dd HH:mm:ss");
-                    for (int i = 2; i < list.size(); i++) {
+                    int si = 0;
+                    for (int i = 1; i < list.size(); i++) {
                         List<Object> lo = list.get(i);
-                        if(list.get(i).size() < 8){
+                        if(list.get(i).size() < 11){
                             break;
                         }
-                        int number = new Double(list.get(i).get(8).toString()).intValue();
+                        int number = new Double(list.get(i).get(11).toString()).intValue();
                         for (int j = 0; j < number; j++) {
                             accCommonInfo.setShipNumber(shipNumber);
                             accCommonInfo.setSerialNumber(new Double(list.get(i).get(0).toString()).intValue());
-                            accCommonInfo.setBatch(new Double(list.get(i).get(1).toString()).intValue());
-                            accCommonInfo.setSegmentation(String.valueOf(new Double(list.get(i).get(2).toString()).intValue()));
-                            accCommonInfo.setPartNumber(list.get(i).get(3).toString());
-                            accCommonInfo.setThickness(new Double(list.get(i).get(4).toString()).intValue());
-                            accCommonInfo.setWidth(new Double(list.get(i).get(5).toString()).intValue());
-                            accCommonInfo.setLength(new Double(list.get(i).get(6).toString()).intValue());
-                            accCommonInfo.setType(list.get(i).get(7).toString());
+                            accCommonInfo.setBatch(new Double(list.get(i).get(2).toString()).intValue());
+                            accCommonInfo.setSegmentation(String.valueOf(new Double(list.get(i).get(3).toString()).intValue()));
+                            accCommonInfo.setPartNumber(list.get(i).get(4).toString());
+                            accCommonInfo.setMaterial(list.get(i).get(5).toString());
+                            accCommonInfo.setThickness(new Double(list.get(i).get(6).toString()).intValue());
+                            accCommonInfo.setWidth(new Double(list.get(i).get(7).toString()).intValue());
+                            accCommonInfo.setLength(new Double(list.get(i).get(8).toString()).intValue());
+                            accCommonInfo.setType(list.get(i).get(9).toString());
                             accCommonInfo.setNumberParts(1);
-                            accCommonInfo.setGroup(list.get(i).get(9).toString());
+                            accCommonInfo.setGroup(list.get(i).get(10).toString());
+                            /*accCommonInfo.setWight(Double.parseDouble(list.get(i).get(12).toString()));
+                            accCommonInfo.setMishu(Double.parseDouble(list.get(i).get(13).toString()));*/
                             accCommonInfo.setStatus(0);
                             accCommonInfo.setReplenishmentStatus(0);
                             accCommonInfo.setCreator(admin);
@@ -136,6 +139,7 @@ public class AdminController {
                             accCommonInfo.setRegisterDate(dateNow);
                             accCommonInfo.setUpdateDate(dateNow);
                             int createStatus = this.accCommonInfoService.insert(accCommonInfo);
+                            si++;
                             if (createStatus != 1) {
                                 break;
                             }
@@ -145,11 +149,11 @@ public class AdminController {
 
                     }
                     //Integer size = this.accCommonInfoMapper.selectAll3Count(shipNumber,String.valueOf(new Double(list.get(2).get(2).toString()).intValue()));
-                    boolean createSegmentationStatus = this.shipSegmentationService.createShipSegmentation(shipNumber, admin,0);
-                    if (createSegmentationStatus == false) {
+                    boolean createSegmentationStatus = this.shipSegmentationService.createShipSegmentation(shipNumber, admin,si);
+                    /*if (createSegmentationStatus == false) {
                         statusMap.put("status", "failed");
                         return statusMap;
-                    }
+                    }*/
                     System.out.println("完成");
                     statusMap.put("status", "success");
                     return statusMap;

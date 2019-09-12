@@ -72,6 +72,36 @@ public class WorkItemPlanController {
         String claim = this.workItemRelationService.getAssemblyInfo(pageNo,pageSize,admin,startDate,endDate);
         return claim;
     }
+    /*
+     * @author 毕翔斐
+     * @version 1.0
+     * @description
+     * */
+    @RequestMapping(value = "/getFuckEveryDay")
+    public String getFuckEveryDay(Integer id){
+        String claim = this.workItemRelationService.getFuckEveryDay(id);
+        return claim;
+    }
+    /*
+     * @author 毕翔斐
+     * @version 1.0
+     * @description
+     * */
+    @RequestMapping(value = "/getFuckEveryDay2")
+    public String getFuckEveryDay2(Integer id,String admin){
+        String claim = this.workItemRelationService.getFuckEveryDay2(id,admin);
+        return claim;
+    }
+    /*
+     * @author 毕翔斐
+     * @version 1.0
+     * @description
+     * */
+    @RequestMapping(value = "/getFuckEveryDay3")
+    public String getFuckEveryDay3(String fuckGroup,String admin){
+        String claim = this.workItemRelationService.getFuckEveryDay3(fuckGroup,admin);
+        return claim;
+    }
 
     /*
      * @author 毕翔斐
@@ -123,8 +153,19 @@ public class WorkItemPlanController {
      * @description 获取出库列表
      * */
     @RequestMapping(value = "/getOutInfo")
-    public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String adminRole,String startDate,String endDate){
-        String getOutInfo = this.workItemRelationService.getOutInfo(pageNo,pageSize,admin,startDate,endDate);
+    public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String adminRole,String shipNumber,String segmentation,String startDate,String endDate){
+        String getOutInfo = this.workItemRelationService.getOutInfo(pageNo,pageSize,admin,shipNumber,segmentation,startDate,endDate);
+        return getOutInfo;
+    }
+
+    /*
+     * @author 毕翔斐
+     * @version 1.0
+     * @description 获取出库记录
+     * */
+    @RequestMapping(value = "/getOutInfo2")
+    public String getOutInfo2(Integer pageNo, Integer pageSize, String admin){
+        String getOutInfo = this.workItemRelationService.getOutInfo2(pageNo,pageSize,admin);
         return getOutInfo;
     }
 

@@ -8,12 +8,15 @@
     <result column="batch" jdbcType="INTEGER" property="batch" />
     <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
     <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="material" jdbcType="VARCHAR" property="material" />
     <result column="thickness" jdbcType="INTEGER" property="thickness" />
     <result column="width" jdbcType="INTEGER" property="width" />
     <result column="length" jdbcType="INTEGER" property="length" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="number_parts" jdbcType="INTEGER" property="numberParts" />
     <result column="group" jdbcType="VARCHAR" property="group" />
+    <result column="wight" jdbcType="DOUBLE" property="wight" />
+    <result column="mishu" jdbcType="DOUBLE" property="mishu" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="replenishment_status" jdbcType="INTEGER" property="replenishmentStatus" />
     <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
@@ -21,6 +24,7 @@
     <result column="creator" jdbcType="VARCHAR" property="creator" />
     <result column="updater" jdbcType="VARCHAR" property="updater" />
     <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+    <result column="text2" jdbcType="VARCHAR" property="text2" />
   </resultMap>
   <resultMap id="BaseResultMap2" type="cn.teacherbe.entity.AccInecomingInfo">
     <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
@@ -30,10 +34,23 @@
     <result column="replenishment_status" jdbcType="INTEGER" property="replenishmentStatus" />
     <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
     <result column="number_plate" jdbcType="VARCHAR" property="numberPlate" />
+    <result column="group" jdbcType="VARCHAR" property="group" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="text" jdbcType="VARCHAR" property="text" />
   </resultMap>
   <resultMap id="BaseResultMap3" type="cn.teacherbe.entity.PairEntity">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+  </resultMap>
+  <resultMap id="BaseResultMap4" type="cn.teacherbe.entity.FuckEveryDay">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="ship_number" jdbcType="VARCHAR" property="shipNumber" />
+    <result column="batch" jdbcType="INTEGER" property="batch" />
+    <result column="segmentation" jdbcType="VARCHAR" property="segmentation" />
+    <result column="part_number" jdbcType="VARCHAR" property="partNumber" />
+    <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+    <result column="length" jdbcType="INTEGER" property="length" />
+    <result column="text" jdbcType="VARCHAR" property="text" />
   </resultMap>
   <sql id="Base_Column_List">
     id, ship_number, serial_number, batch, segmentation, part_number, thickness, width, 
@@ -45,6 +62,11 @@
   </select>
   <select id="getDone" resultType="Integer">
     SELECT COUNT(*) FROM t_acc_commoninfo WHERE status in (2,3) AND replenishment_status = 0 AND delete_flag = 0;
+  </select>
+  <select id="getDoneDay" resultType="Integer">
+    SELECT COUNT(*) FROM t_acc_commoninfo
+    WHERE status in (2,3) AND replenishment_status = 0 AND delete_flag = 0
+    AND to_days(update_date) = to_days(now());
   </select>
   <select id="getUnDone" resultType="Integer">
     SELECT COUNT(*) FROM t_acc_commoninfo WHERE status in (2,3) AND replenishment_status = 1 AND delete_flag = 0;
@@ -70,9 +92,15 @@
     AND ship_number = #{shipNumber,jdbcType=VARCHAR}
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
+  <select id="getFuckEveryDay" resultMap="BaseResultMap4">
+    select * from t_acc_commoninfo t
+    where (t.id = (select one_common_id from t_workitem_relation where id = #{id,jdbcType=INTEGER})
+    or t.id = (select two_common_id from t_workitem_relation where id = #{id,jdbcType=INTEGER}))
+    and t.delete_flag = 0;
+  </select>
   <select id="selectAll2" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
+    *
     from t_acc_commoninfo
     where
     delete_flag = 0
@@ -82,6 +110,11 @@
       </if>
     </trim>
     AND ship_number = #{shipNumber,jdbcType=VARCHAR}
+    <trim>
+      <if test="type != null">
+        AND part_number like '%${type}%'
+      </if>
+    </trim>
     AND update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
@@ -98,6 +131,11 @@
       </if>
     </trim>
     AND ship_number = #{shipNumber,jdbcType=VARCHAR}
+    <trim>
+      <if test="type != null">
+        AND part_number like '%${type}%'
+      </if>
+    </trim>
     AND update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
@@ -160,8 +198,7 @@
     from t_acc_commoninfo
     where
     delete_flag = 0
-    AND `status` = #{status,jdbcType=INTEGER}
-    AND replenishment_status = 0
+    AND `status` IN (1,2,3)
     AND update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     ORDER BY ship_number,segmentation
@@ -174,8 +211,7 @@
     from t_acc_commoninfo
     where
     delete_flag = 0
-    AND `status` = #{status,jdbcType=INTEGER}
-    AND replenishment_status = 0
+    AND `status` IN (1,2,3)
     AND update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
     ORDER BY ship_number,segmentation
@@ -227,7 +263,8 @@
 
   <select id="selectAccInecomingInfo" resultMap="BaseResultMap2">
     select
-    t.ship_number,t.batch,t.segmentation,t.part_number,t.number_parts,t.register_date,t.replenishment_status,t1.number_plate
+    t.ship_number,t.batch,t.segmentation,t.part_number,t.number_parts,t.register_date,
+    t.replenishment_status,t1.number_plate,t.group,t.updater,t.text
     from t_acc_commoninfo t
     LEFT JOIN t_acc_seplenishment t1 ON t.id = t1.common_id
     where
@@ -310,13 +347,12 @@
   </update>
 
   <update id="updateById" >
-    UPDATE t_acc_commoninfo SET status = 1,updater = #{updater,jdbcType=VARCHAR},
+    <foreach collection="idGroup" item="item" index="index" separator=";">
+    UPDATE t_acc_commoninfo SET status = 1,text2 = #{item.text2}, updater = #{updater,jdbcType=VARCHAR},
     update_date = #{updateDate,jdbcType=TIMESTAMP}
     WHERE
     delete_flag = 0
-    AND ID IN
-    <foreach collection="idGroup" item="item" index="index" open="(" separator="," close=")">
-     #{item}
+    AND ID = #{item.id}
     </foreach>
   </update>
 
@@ -341,6 +377,16 @@
     AND status = 2
     AND (id = #{commonId,jdbcType=INTEGER} OR id = #{commonId2,jdbcType=INTEGER})
   </update>
+  <update id="updateById5" >
+    UPDATE t_acc_commoninfo SET status = 2,replenishment_status = 1,updater = #{updater,jdbcType=VARCHAR},
+    update_date = SYSDATE(),text = #{text,jdbcType=VARCHAR}
+    WHERE delete_flag = 0 and id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateById6" >
+    UPDATE t_acc_commoninfo SET status = 2,replenishment_status = 0,updater = #{updater,jdbcType=VARCHAR},
+    update_date = SYSDATE(),text = #{text,jdbcType=VARCHAR}
+    WHERE delete_flag = 0 and id = #{id,jdbcType=INTEGER}
+  </update>
   <update id="updateReplenishment" >
     UPDATE t_acc_commoninfo t
     LEFT JOIN t_acc_seplenishment t1 ON t.id = t1.common_id
@@ -364,16 +410,16 @@
   </delete>
   <insert id="insert" parameterType="cn.teacherbe.entity.AccCommonInfo">
     insert into t_acc_commoninfo (id, ship_number, serial_number, 
-      batch, segmentation, part_number, 
+      batch, segmentation, part_number, material,
       thickness, width, length, 
       type, number_parts, `group`,
       `status`, replenishment_status, register_date,
       update_date, creator, updater, 
       delete_flag)
     values (#{id,jdbcType=INTEGER}, #{shipNumber,jdbcType=VARCHAR}, #{serialNumber,jdbcType=INTEGER}, 
-      #{batch,jdbcType=INTEGER}, #{segmentation,jdbcType=VARCHAR}, #{partNumber,jdbcType=VARCHAR}, 
+      #{batch,jdbcType=INTEGER}, #{segmentation,jdbcType=VARCHAR}, #{partNumber,jdbcType=VARCHAR}, #{material,jdbcType=VARCHAR},
       #{thickness,jdbcType=INTEGER}, #{width,jdbcType=INTEGER}, #{length,jdbcType=INTEGER}, 
-      #{type,jdbcType=VARCHAR}, #{numberParts,jdbcType=INTEGER}, #{group,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{numberParts,jdbcType=INTEGER}, #{group,jdbcType=VARCHAR},
       #{status,jdbcType=INTEGER}, #{replenishmentStatus,jdbcType=INTEGER}, #{registerDate,jdbcType=TIMESTAMP}, 
       #{updateDate,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, #{updater,jdbcType=VARCHAR}, 
       #{deleteFlag,jdbcType=INTEGER})

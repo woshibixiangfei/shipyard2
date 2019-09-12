@@ -8,6 +8,8 @@ import java.util.List;
 public interface WorkitemRelationMapper {
     int deleteByPrimaryKey(Integer id);
 
+    int deleteByOne(Integer id);
+
     int insert(WorkitemRelation record);
 
     int insertSelective(WorkitemRelation record);
@@ -26,13 +28,17 @@ public interface WorkitemRelationMapper {
 
     List<WorkitemRelationPlan> selectWeldingInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("no")String admin,@Param("type")Integer type,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-    List<OutInfo> selectOutInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("startDate") String startDate, @Param("endDate") String endDate);
+    List<OutInfo> selectOutInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation,@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    List<OutInfo> selectOutInfo2(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("no")String admin);
 
     Integer getWelding12345Day(@Param("type")Integer type);
 
     Integer getWelding12345Month(@Param("type")Integer type);
 
-    Integer selectOutInfoCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
+    Integer selectOutInfoCount(@Param("shipNumber")String shipNumber,@Param("segmentation")String segmentation,@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    Integer selectOutInfoCount2(@Param("no")String admin);
 
     Integer selectPlanCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
@@ -42,6 +48,8 @@ public interface WorkitemRelationMapper {
 
     Integer getDone();
 
+    Integer getAssemblyInfoDone(@Param("no")String admin);
+
     Integer selectAssemblyInfoCount(@Param("no")String admin,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     List<TaskInfo> selectTaskInfo(@Param("pageNo")Integer pageNo,@Param("pageSize")Integer pageSize,@Param("no")String admin,@Param("startDate") String startDate, @Param("endDate") String endDate);
@@ -50,15 +58,17 @@ public interface WorkitemRelationMapper {
 
     Integer selectWeldingInfoCount(@Param("no")String admin,@Param("type")Integer type,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-    List<WorkItem> getWeldingSelect(@Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize,@Param("startDate") String startDate, @Param("endDate") String endDate);
+    List<WorkItem> getWeldingSelect(@Param("no")String admin,@Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-    Integer getWeldingSelectCount(@Param("startDate") String startDate, @Param("endDate") String endDate);
+    Integer getWeldingSelectCount(@Param("no")String admin,@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     int a(@Param("id")Integer id);
 
     int b(@Param("id")Integer id);
 
     int c(@Param("id")Integer id,@Param("updater")String updater);
+
+    int d(@Param("id")Integer id,@Param("updater")String updater);
 
     int underPlan(@Param("updater")String updater,@Param("idGroup")List<UnderPlan> idGroup);
 

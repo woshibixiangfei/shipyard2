@@ -1,12 +1,11 @@
 package cn.teacherbe.service.impl;
 
-import cn.teacherbe.dao.AccCommonInfoMapper;
-import cn.teacherbe.dao.ShipSegmentationMapper;
-import cn.teacherbe.dao.WorkItemMapper;
-import cn.teacherbe.dao.WorkitemRelationMapper;
+import cn.teacherbe.dao.*;
 import cn.teacherbe.entity.*;
+import cn.teacherbe.service.AccCommonInfoService;
 import cn.teacherbe.service.AdminService;
 import cn.teacherbe.service.WorkItemRelationService;
+import cn.teacherbe.utils.DateUtils;
 import cn.teacherbe.utils.StringUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -14,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Service("workItemRealationService")
@@ -30,6 +31,10 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     private AccCommonInfoMapper accCommonInfoMapper;
     @Autowired
     private ShipSegmentationMapper shipSegmentationMapper;
+    @Autowired
+    private AccCommonInfoService accCommonInfoService;
+    @Autowired
+    private AccSeplenishmentMapper accSeplenishmentMapper;
 
     @Override
     public String getPlan(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
@@ -172,11 +177,13 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     JSONArray jsonObject = JSONArray.fromObject(AssemblyList);
                     Integer total = this.workItemRealationMapper.selectAssemblyInfoCount(admin,startDate,endDate);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
+                    Integer assemblyInfoDone = this.workItemRealationMapper.getAssemblyInfoDone(admin);
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
                     JSONObject data = new JSONObject();
                     data.put("total", total);
                     data.put("totalPage", totalPage);
+                    data.put("assemblyInfoDone", assemblyInfoDone);
                     data.put("pageNo", current);
                     data.put("pageSize", AssemblyList.size());
                     JSONArray jsonArray = JSONArray.fromObject(jsonObject);
@@ -350,7 +357,7 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
     }
 
     @Override
-    public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String startDate,String endDate) {
+    public String getOutInfo(Integer pageNo, Integer pageSize, String admin,String shipNumber,String segmentation,String startDate,String endDate) {
         try{
             List<String> roleList = this.adminService.getRole(admin);
             for (int t = 0; t < roleList.size(); t++) {
@@ -359,9 +366,9 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                     pageNo = (pageNo - 1) * pageSize;
                     Integer newTotal = this.workItemRealationMapper.getTotal();
                     Integer done = this.workItemRealationMapper.getDone();
-                    List<OutInfo> OutInfoList = this.workItemRealationMapper.selectOutInfo(pageNo, pageSize,startDate,endDate);
+                    List<OutInfo> OutInfoList = this.workItemRealationMapper.selectOutInfo(pageNo, pageSize,shipNumber,segmentation,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(OutInfoList);
-                    Integer total = this.workItemRealationMapper.selectOutInfoCount(startDate,endDate);
+                    Integer total = this.workItemRealationMapper.selectOutInfoCount(shipNumber,segmentation,startDate,endDate);
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
                     json.put("status", "success");
@@ -403,9 +410,9 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
                 if (roleList != null){
                     Integer current = pageNo;
                     pageNo = (pageNo - 1) * pageSize;
-                    List<WorkItem> TaskList = this.workItemRealationMapper.getWeldingSelect(pageNo, pageSize,startDate,endDate);
+                    List<WorkItem> TaskList = this.workItemRealationMapper.getWeldingSelect(admin,pageNo, pageSize,startDate,endDate);
                     JSONArray jsonObject = JSONArray.fromObject(TaskList);
-                    Integer total = this.workItemRealationMapper.getWeldingSelectCount(startDate,endDate);
+                    Integer total = this.workItemRealationMapper.getWeldingSelectCount(admin,startDate,endDate);
                     Integer all = this.workItemRealationMapper.getWeldingAll();
                     Integer totalPage = (total + pageSize - 1) / pageSize;
                     JSONObject json = new JSONObject();
@@ -457,6 +464,129 @@ public class WorkItemRelationServiceImpl implements WorkItemRelationService {
             return json.toString();
         }
         json.put("status","failed");
+        return json.toString();
+    }
+
+    @Override
+    public String getFuckEveryDay(Integer id) {
+        JSONObject json = new JSONObject();
+        try{
+            List<FuckEveryDay> TaskList = this.accCommonInfoMapper.getFuckEveryDay(id);
+            JSONArray jsonObject = JSONArray.fromObject(TaskList);
+            json.put("record", jsonObject);
+            json.put("fuckId", id);
+            json.put("status", "success");
+        } catch (Exception e){
+            e.printStackTrace();
+            json.put("status","failed");
+            return json.toString();
+        }
+        json.put("status","failed");
+        return json.toString();
+    }
+
+    @Override
+    public String getFuckEveryDay2(Integer id, String admin) {
+        JSONObject json = new JSONObject();
+        try{
+            this.workItemRealationMapper.d(id,admin);
+            json.put("status", "success");
+            return json.toString();
+        } catch (Exception e){
+            e.printStackTrace();
+            json.put("status","failed");
+            return json.toString();
+        }
+    }
+
+    @Override
+    public String getFuckEveryDay3(String fuckGroup,String admin) {
+        JSONObject json = new JSONObject();
+        try{
+            String dateNow = new DateUtils().dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
+            List<FuckEveryDay3> fuckEveryDay3 = com.alibaba.fastjson.JSONArray.parseArray(fuckGroup, FuckEveryDay3.class);
+
+            this.workItemRealationMapper.deleteByOne(fuckEveryDay3.get(0).getId());
+            this.workItemRealationMapper.deleteByOne(fuckEveryDay3.get(1).getId());
+            for(int i=0; i<fuckEveryDay3.size(); i++){
+                if(fuckEveryDay3.get(i).getType() == 1){
+                    this.accCommonInfoMapper.updateById5(fuckEveryDay3.get(i).getText(),
+                            fuckEveryDay3.get(i).getId(),
+                            admin);
+                    List<String> result = new ArrayList<String>();
+                    result.add(String.valueOf(fuckEveryDay3.get(i).getId()));
+                    this.accSeplenishmentMapper.insertInit(result, admin, dateNow, admin, dateNow);
+                }
+                if(fuckEveryDay3.get(i).getType() == 0){
+                    AccCommonInfo acc = this.accCommonInfoMapper.selectByPrimaryKey(fuckEveryDay3.get(i).getId());
+                    if(acc.getPartNumber().substring(acc.getPartNumber().length()-1,acc.getPartNumber().length()).equals("F")){
+                        this.accCommonInfoMapper.updateById6("缺腹板",
+                                fuckEveryDay3.get(i).getId(),
+                                admin);
+                    } else {
+                        this.accCommonInfoMapper.updateById6("缺面板",
+                                fuckEveryDay3.get(i).getId(),
+                                admin);
+                    }
+                }
+            }
+            /*this.accCommonInfoMapper.updateById5(admin, dateNow, result);
+
+            for(int i=0; i<result.size(); i++){
+                this.accCommonInfoMapper.updateById5(result2.get(i),Integer.parseInt(result.get(i)));
+                if(result.size() != 2) {
+                    if (Integer.parseInt(result.get(i)) == oneId) {
+                        this.accCommonInfoMapper.updateById5(result2.get(i), oneId);
+                    }
+                    if (Integer.parseInt(result.get(i)) == twoId) {
+                        this.accCommonInfoMapper.updateById5(result2.get(i), twoId);
+                    }
+                }
+            }*/
+            json.put("status","success");
+            return json.toString();
+        } catch (Exception e){
+            e.printStackTrace();
+            json.put("status","failed");
+            return json.toString();
+        }
+    }
+
+    @Override
+    public String getOutInfo2(Integer pageNo, Integer pageSize, String admin) {
+        try{
+            List<String> roleList = this.adminService.getRole(admin);
+            for (int t = 0; t < roleList.size(); t++) {
+                if (roleList.get(t).equals("16")) {
+                    Integer current = pageNo;
+                    pageNo = (pageNo - 1) * pageSize;
+                    List<OutInfo> OutInfoList = this.workItemRealationMapper.selectOutInfo2(pageNo, pageSize,admin);
+                    JSONArray jsonObject = JSONArray.fromObject(OutInfoList);
+                    Integer total = this.workItemRealationMapper.selectOutInfoCount2(admin);
+                    Integer totalPage = (total + pageSize - 1) / pageSize;
+                    JSONObject json = new JSONObject();
+                    json.put("status", "success");
+                    JSONObject data = new JSONObject();
+                    data.put("total", total);
+                    data.put("totalPage", totalPage);
+                    data.put("pageNo", current);
+                    data.put("pageSize", OutInfoList.size());
+                    JSONArray jsonArray = JSONArray.fromObject(jsonObject);
+                    data.put("record", jsonArray);
+                    json.put("data", data);
+                    String jsonStr = json.toString();
+                    return jsonStr;
+                }
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            JSONObject json = new JSONObject();
+            json.put("status", "failed");
+            return json.toString();
+        }
+        JSONObject json = new JSONObject();
+        json.put("status", "failed");
         return json.toString();
     }
 

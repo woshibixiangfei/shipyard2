@@ -16,7 +16,7 @@ public interface AccCommonInfoService {
     int updateByPrimaryKey(AccCommonInfo record);
 
     String getAccCommonInfo(String shipNumber,String segmentation,
-                            Integer pageNo,Integer pageSize,String admin,String startDate,String endDate);
+                            Integer pageNo,Integer pageSize,String type,String admin,String startDate,String endDate);
 
     String generateInvoice(String idGroup, String admin);
 

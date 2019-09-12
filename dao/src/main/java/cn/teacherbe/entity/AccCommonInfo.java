@@ -15,6 +15,8 @@ public class AccCommonInfo {
 
     private String partNumber;
 
+    private String material;
+
     private Integer thickness;
 
     private Integer width;
@@ -26,6 +28,10 @@ public class AccCommonInfo {
     private Integer numberParts;
 
     private String group;
+
+    private double wight;
+
+    private double mishu;
 
     private Integer status;
 
@@ -40,6 +46,10 @@ public class AccCommonInfo {
     private String updater;
 
     private Integer deleteFlag;
+
+    private String text;
+
+    private String text2;
 
     public Integer getId() {
         return id;
@@ -191,5 +201,45 @@ public class AccCommonInfo {
 
     public void setDeleteFlag(Integer deleteFlag) {
         this.deleteFlag = deleteFlag;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
+    public double getWight() {
+        return wight;
+    }
+
+    public void setWight(double wight) {
+        this.wight = wight;
+    }
+
+    public double getMishu() {
+        return mishu;
+    }
+
+    public void setMishu(double mishu) {
+        this.mishu = mishu;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getText2() {
+        return text2;
+    }
+
+    public void setText2(String text2) {
+        this.text2 = text2;
     }
 }

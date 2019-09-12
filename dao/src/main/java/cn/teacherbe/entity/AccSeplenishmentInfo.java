@@ -17,7 +17,13 @@ public class AccSeplenishmentInfo {
 
     private String numberPlate;
 
+    private String group;
+
     private String updateDate;
+
+    private String updater;
+
+    private String text;
 
     public Integer getId() {
         return id;
@@ -89,5 +95,29 @@ public class AccSeplenishmentInfo {
 
     public void setSegmentation(String segmentation) {
         this.segmentation = segmentation;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getUpdater() {
+        return updater;
+    }
+
+    public void setUpdater(String updater) {
+        this.updater = updater;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

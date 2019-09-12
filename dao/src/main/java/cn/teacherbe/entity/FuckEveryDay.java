@@ -1,6 +1,7 @@
 package cn.teacherbe.entity;
 
-public class AccInecomingInfo {
+public class FuckEveryDay {
+    private Integer id;
 
     private String shipNumber;
 
@@ -10,17 +11,10 @@ public class AccInecomingInfo {
 
     private String partNumber;
 
-    private Integer numberParts;
-
-    private Integer replenishmentStatus;
 
     private String registerDate;
 
-    private String numberPlate;
-
-    private String group;
-
-    private String updater;
+    private Integer length;
 
     private String text;
 
@@ -56,22 +50,6 @@ public class AccInecomingInfo {
         this.partNumber = partNumber;
     }
 
-    public Integer getNumberParts() {
-        return numberParts;
-    }
-
-    public void setNumberParts(Integer numberParts) {
-        this.numberParts = numberParts;
-    }
-
-    public Integer getReplenishmentStatus() {
-        return replenishmentStatus;
-    }
-
-    public void setReplenishmentStatus(Integer replenishmentStatus) {
-        this.replenishmentStatus = replenishmentStatus;
-    }
-
     public String getRegisterDate() {
         return registerDate;
     }
@@ -80,28 +58,12 @@ public class AccInecomingInfo {
         this.registerDate = registerDate;
     }
 
-    public String getNumberPlate() {
-        return numberPlate;
+    public Integer getLength() {
+        return length;
     }
 
-    public void setNumberPlate(String numberPlate) {
-        this.numberPlate = numberPlate;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public String getUpdater() {
-        return updater;
-    }
-
-    public void setUpdater(String updater) {
-        this.updater = updater;
+    public void setLength(Integer length) {
+        this.length = length;
     }
 
     public String getText() {
@@ -110,5 +72,13 @@ public class AccInecomingInfo {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

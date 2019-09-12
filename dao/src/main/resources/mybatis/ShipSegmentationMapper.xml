@@ -63,8 +63,18 @@
     AND t.ship_number = #{shipNumber,jdbcType=VARCHAR}
     GROUP BY t.segmentation;
   </select>
-
-
+  <select id="selectByNumber" resultMap="BaseResultMap">
+    select
+    *
+    from t_ship_segmentation
+    where ship_id = #{shipId,jdbcType=INTEGER} and segmentation = #{segmentation,jdbcType=INTEGER} and delete_flag = 0
+  </select>
+  <update id="updateAnother">
+    update t_ship_segmentation
+    set
+      `number` = `number` + #{number,jdbcType=INTEGER}
+    where ship_id = #{shipId,jdbcType=INTEGER} and segmentation = #{segmentation,jdbcType=INTEGER} and delete_flag = 0;
+  </update>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_ship_segmentation
     where id = #{id,jdbcType=INTEGER}
