@@ -350,16 +350,7 @@
     AND t.workitem_status = 2
     AND t.check_if = 1
     AND t3.now is null
-    AND (t.executive_class in (
-    SELECT
-    c.id
-    FROM t_role c where c.id in (
-    SELECT b.role_id from t_admin a
-    LEFT JOIN t_admin_role b ON a.id = b.admin_id
-    WHERE
-    a.delete_flag = 0
-    AND a.`no` = #{no,jdbcType=VARCHAR}
-    ))
+    AND('刘恩胜' = #{no,jdbcType=VARCHAR}
     OR '孔祥禹' = #{no,jdbcType=VARCHAR})
     AND t.process &lt;&gt; 'nothing'
     AND t.process like '%${type}%'
@@ -379,16 +370,7 @@
     AND t.workitem_status = 2
     AND t.check_if = 1
     AND t3.now is null
-    AND (t.executive_class in (
-    SELECT
-    c.id
-    FROM t_role c where c.id in (
-    SELECT b.role_id from t_admin a
-    LEFT JOIN t_admin_role b ON a.id = b.admin_id
-    WHERE
-    a.delete_flag = 0
-    AND a.`no` = #{no,jdbcType=VARCHAR}
-    ))
+    AND('刘恩胜' = #{no,jdbcType=VARCHAR}
     OR '孔祥禹' = #{no,jdbcType=VARCHAR})
     AND t.process &lt;&gt; 'nothing'
     AND t.process like '%${type}%'
@@ -406,16 +388,7 @@
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t3.description is not null
     AND t.workitem_status in(2,3,4,6)
-    and (executive_class = (SELECT
-    c.id
-    FROM t_role c where c.id in (
-    SELECT b.role_id from t_admin a
-    LEFT JOIN t_admin_role b ON a.id = b.admin_id
-    WHERE
-    a.delete_flag = 0
-    AND a.`no` = #{no,jdbcType=VARCHAR}
-    )
-	AND c.name = #{no,jdbcType=VARCHAR})
+    and (t3.updater = #{no,jdbcType=VARCHAR}
 	OR '孔祥禹' = #{no,jdbcType=VARCHAR}
 	)
     AND t3.update_date BETWEEN
@@ -432,17 +405,9 @@
     (t.delete_flag = 0 or t.delete_flag is null)
     AND t3.description is not null
     AND t.workitem_status in(2,3,4,6)
-    and (executive_class = (SELECT
-    c.id
-    FROM t_role c where c.id in (
-    SELECT b.role_id from t_admin a
-    LEFT JOIN t_admin_role b ON a.id = b.admin_id
-    WHERE
-    a.delete_flag = 0
-    AND a.`no` = #{no,jdbcType=VARCHAR}
-    )
-	AND c.name = #{no,jdbcType=VARCHAR})
-	OR '孔祥禹' = #{no,jdbcType=VARCHAR})
+    and (t3.updater = #{no,jdbcType=VARCHAR}
+	OR '孔祥禹' = #{no,jdbcType=VARCHAR}
+	)
     AND t3.update_date BETWEEN
     date_format(#{startDate,jdbcType=TIMESTAMP} ,'%Y-%m-%d %H:%i:%s') and date_format(#{endDate,jdbcType=TIMESTAMP},'%Y-%m-%d %H:%i:%s')
   </select>
